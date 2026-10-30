@@ -55,7 +55,7 @@ function Checkout() {
   const options = useMemo(() => (cepState === "ok" ? shippingOptions(f.cep) : []), [cepState, f.cep]);
   const shipping = options.find((o) => o.id === ship)?.price ?? 0;
   const total = subtotal + shipping;
-  const ready = f.email.includes("@") && f.name.trim().length > 2 && f.phone.replace(/\D/g, "").length >= 10 && cepState === "ok" && f.street && f.number;
+  const ready = f.email.includes("@") && f.name.trim().length > 2 && f.phone.replace(/\D/g, "").length >= 10 && [11, 14].includes(f.cpf.replace(/\D/g, "").length) && cepState === "ok" && f.street && f.number;
 
   const createPix = useServerFn(createPixPayment);
   const checkStatus = useServerFn(getPaymentStatus);
@@ -133,7 +133,7 @@ function Checkout() {
 
   return (
     <main className="mx-auto grid max-w-6xl gap-8 px-4 py-8 md:grid-cols-[1fr_400px] md:px-8">
-      <form className="space-y-8" onSubmit={(e) => { e.preventDefault(); if (ready) setDone(true); }}>
+      <form className="space-y-8" onSubmit={(e) => { e.preventDefault(); if (ready && !paying) pay(); }}>
         <div className="flex items-center gap-2 text-xs text-muted-foreground"><Lock className="h-4 w-4" /> Compra 100% segura</div>
 
         <section className="space-y-3">
@@ -141,6 +141,7 @@ function Checkout() {
           <input className={input} type="email" placeholder="E-mail" value={f.email} onChange={set("email")} required />
           <input className={input} placeholder="Nome completo" value={f.name} onChange={set("name")} required />
           <input className={input} type="tel" placeholder="WhatsApp / Celular" value={f.phone} onChange={set("phone")} required />
+          <input className={input} inputMode="numeric" placeholder="CPF" value={f.cpf} onChange={set("cpf")} maxLength={18} required />
         </section>
 
         <section className="space-y-3">
@@ -177,9 +178,10 @@ function Checkout() {
           </section>
         )}
 
-        <button type="submit" disabled={!ready} className="w-full bg-primary py-4 text-sm font-bold uppercase tracking-wide text-primary-foreground disabled:opacity-50">
-          Finalizar compra · {formatBRL(total)}
+        <button type="submit" disabled={!ready || paying} className="w-full bg-primary py-4 text-sm font-bold uppercase tracking-wide text-primary-foreground disabled:opacity-50">
+          {paying ? "Gerando Pix…" : <>Pagar com Pix · {formatBRL(total)}</>}
         </button>
+        {err && <p className="text-center text-sm text-destructive">{err}</p>}
         <p className="flex items-center justify-center gap-2 text-xs text-muted-foreground"><ShieldCheck className="h-4 w-4" /> Seus dados estão protegidos</p>
       </form>
 
