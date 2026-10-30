@@ -6,6 +6,8 @@ import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/lib/promo";
 import { cleanCep, lookupCep, maskCep, shippingOptions, type ShippingOption } from "@/lib/shipping";
 import { cn } from "@/lib/utils";
+import { useServerFn } from "@tanstack/react-start";
+import { createPixPayment, getPaymentStatus } from "@/lib/payments.functions";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
