@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlackFridayRouteImport } from './routes/black-friday'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as CollectionsHandleRouteImport } from './routes/collections.$handle'
 import { Route as ProductsHandleRouteImport } from './routes/products.$handle'
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const BlackFridayRoute = BlackFridayRouteImport.update({
   id: '/black-friday',
   path: '/black-friday',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -44,6 +50,7 @@ const ProductsHandleRoute = ProductsHandleRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/black-friday': typeof BlackFridayRoute
+  '/checkout': typeof CheckoutRoute
   '/search': typeof SearchRoute
   '/collections/$handle': typeof CollectionsHandleRoute
   '/products/$handle': typeof ProductsHandleRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/black-friday': typeof BlackFridayRoute
+  '/checkout': typeof CheckoutRoute
   '/search': typeof SearchRoute
   '/collections/$handle': typeof CollectionsHandleRoute
   '/products/$handle': typeof ProductsHandleRoute
@@ -59,6 +67,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/black-friday': typeof BlackFridayRoute
+  '/checkout': typeof CheckoutRoute
   '/search': typeof SearchRoute
   '/collections/$handle': typeof CollectionsHandleRoute
   '/products/$handle': typeof ProductsHandleRoute
@@ -68,6 +77,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/black-friday'
+    | '/checkout'
     | '/search'
     | '/collections/$handle'
     | '/products/$handle'
@@ -75,6 +85,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/black-friday'
+    | '/checkout'
     | '/search'
     | '/collections/$handle'
     | '/products/$handle'
@@ -82,6 +93,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/black-friday'
+    | '/checkout'
     | '/search'
     | '/collections/$handle'
     | '/products/$handle'
@@ -90,6 +102,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BlackFridayRoute: typeof BlackFridayRoute
+  CheckoutRoute: typeof CheckoutRoute
   SearchRoute: typeof SearchRoute
   CollectionsHandleRoute: typeof CollectionsHandleRoute
   ProductsHandleRoute: typeof ProductsHandleRoute
@@ -109,6 +122,13 @@ declare module '@tanstack/react-router' {
       path: '/black-friday'
       fullPath: '/black-friday'
       preLoaderRoute: typeof BlackFridayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -138,6 +158,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BlackFridayRoute: BlackFridayRoute,
+  CheckoutRoute: CheckoutRoute,
   SearchRoute: SearchRoute,
   CollectionsHandleRoute: CollectionsHandleRoute,
   ProductsHandleRoute: ProductsHandleRoute,
