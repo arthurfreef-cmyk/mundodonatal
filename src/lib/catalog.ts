@@ -47,7 +47,7 @@ export function collectionProducts(handle: string): Product[] {
 }
 
 export const minVariant = (p: Product): Variant =>
-  p.variants.reduce((m, v) => (v.p < m.p ? v : m), p.variants[0]);
+  p.variants.reduce<Variant>((m, v) => (v.p < m.p ? v : m), p.variants[0] as Variant);
 
 export const variantPrice = (v: Variant): PricePair => applyPromo(v.p, v.c);
 export const productPrice = (p: Product): PricePair => variantPrice(minVariant(p));
