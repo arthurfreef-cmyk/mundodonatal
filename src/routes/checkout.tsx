@@ -24,8 +24,8 @@ export const Route = createFileRoute("/checkout")({
 const input = "w-full border border-border bg-background px-3 py-3 text-sm outline-none focus:border-primary";
 
 function Checkout() {
-  const { lines, subtotal, setOpen } = useCart();
-  const [f, setF] = useState({ email: "", name: "", phone: "", cep: "", street: "", number: "", comp: "", district: "", city: "", state: "" });
+  const { lines, subtotal, setOpen, clear } = useCart();
+  const [f, setF] = useState({ email: "", name: "", phone: "", cpf: "", cep: "", street: "", number: "", comp: "", district: "", city: "", state: "" });
   const [cepState, setCepState] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [ship, setShip] = useState<ShippingOption["id"]>("free");
   const [done, setDone] = useState(false);
