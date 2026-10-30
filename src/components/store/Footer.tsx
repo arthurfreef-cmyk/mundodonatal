@@ -18,7 +18,10 @@ export function Footer() {
   const [email, setEmail] = useState("");
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    if (!/^\S+@\S+\.\S+$/.test(email)) return toast.error("Digite um e-mail válido.");
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      toast.error("Digite um e-mail válido.");
+      return;
+    }
     toast.success("Pronto! Você vai receber nossas novidades.");
     setEmail("");
   };
