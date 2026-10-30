@@ -1,10 +1,11 @@
 import { Minus, Plus, Trash2, X } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { img } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
 import { formatBRL, installment } from "@/lib/promo";
 
 export function CartDrawer() {
-  const { open, setOpen, lines, subtotal, setQty, remove, checkoutUrl } = useCart();
+  const { open, setOpen, lines, subtotal, setQty, remove } = useCart();
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 bg-ink/50" onClick={() => setOpen(false)}>
@@ -36,9 +37,10 @@ export function CartDrawer() {
           <div className="border-t p-5">
             <div className="flex justify-between text-sm"><span>Subtotal</span><b>{formatBRL(subtotal)}</b></div>
             <p className="mt-1 text-[11px] text-muted-foreground">ou 3x de {formatBRL(installment(subtotal))} sem juros</p>
-            <a href={checkoutUrl} target="_blank" rel="noreferrer" className="mt-4 block bg-primary py-3 text-center text-sm font-semibold text-primary-foreground">
-              Finalizar pedido pelo WhatsApp
-            </a>
+            <Link to="/checkout" onClick={() => setOpen(false)} className="mt-4 block bg-primary py-3 text-center text-sm font-semibold text-primary-foreground">
+              Finalizar compra
+            </Link>
+            <p className="mt-2 text-center text-[11px] text-muted-foreground">Frete grátis disponível para todo o Brasil</p>
           </div>
         )}
       </aside>
