@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Check, Loader2, Lock, ShieldCheck, Truck } from "lucide-react";
-import { img } from "@/lib/catalog";
+import { BadgeCheck, Check, Clock, Loader2, Lock, QrCode, RotateCcw, ShieldCheck, Smartphone, Truck } from "lucide-react";
+import { img, variantPrice } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/lib/promo";
 import { cleanCep, lookupCep, maskCep, shippingOptions, type ShippingOption } from "@/lib/shipping";
 import { cn } from "@/lib/utils";
+import { isValidCpf, maskCpf, maskPhone } from "@/lib/br";
 import { useServerFn } from "@tanstack/react-start";
 import { createPixPayment, getPaymentStatus } from "@/lib/payments.functions";
 
@@ -55,7 +56,7 @@ function Checkout() {
   const options = useMemo(() => (cepState === "ok" ? shippingOptions(f.cep) : []), [cepState, f.cep]);
   const shipping = options.find((o) => o.id === ship)?.price ?? 0;
   const total = subtotal + shipping;
-  const ready = f.email.includes("@") && f.name.trim().length > 2 && f.phone.replace(/\D/g, "").length >= 10 && [11, 14].includes(f.cpf.replace(/\D/g, "").length) && cepState === "ok" && f.street && f.number;
+  const ready = f.email.includes("@") && f.name.trim().length > 2 && f.phone.replace(/\D/g, "").length >= 10 && isValidCpf(f.cpf) && cepState === "ok" && f.street && f.number;
 
   const createPix = useServerFn(createPixPayment);
   const checkStatus = useServerFn(getPaymentStatus);
@@ -63,6 +64,14 @@ function Checkout() {
   const [paying, setPaying] = useState(false);
   const [err, setErr] = useState("");
   const [copied, setCopied] = useState(false);
+  const [left, setLeft] = useState(1800);
+  useEffect(() => {
+    if (!pix) return;
+    setLeft(1800);
+    const t = setInterval(() => setLeft((x) => Math.max(0, x - 1)), 1000);
+    return () => clearInterval(t);
+  }, [pix]);
+  const savings = lines.reduce((s, l) => s + l.qty * Math.max(0, (variantPrice(l.variant).compareAt ?? l.unit) - l.unit), 0);
 
   // Confere a cada 5s se o Pix foi pago.
   useEffect(() => {
@@ -106,7 +115,8 @@ function Checkout() {
     return (
       <main className="mx-auto max-w-md px-4 py-12 text-center">
         <h1 className="text-3xl">Pague com Pix</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Total: <b className="text-primary">{formatBRL(pix.amount / 100)}</b> · válido por 30 minutos</p>
+        <p className="mt-2 text-sm text-muted-foreground">Total: <b className="text-primary">{formatBRL(pix.amount / 100)}</b></p>
+        <p className="mt-3 inline-flex items-center gap-2 bg-secondary px-3 py-1.5 text-sm font-semibold"><Clock className="h-4 w-4 text-primary" /> Expira em {String(Math.floor(left / 60)).padStart(2, "0")}:{String(left % 60).padStart(2, "0")}</p>
         {qr && <img src={qr} alt="QR Code Pix" className="mx-auto mt-6 h-64 w-64 border bg-background p-2" />}
         {pix.code && (
           <>
@@ -117,7 +127,13 @@ function Checkout() {
             </button>
           </>
         )}
-        <p className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Aguardando pagamento…</p>
+        <p className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Aguardando pagamento… a confirmação é automática</p>
+        <ol className="mt-6 space-y-2 border p-4 text-left text-sm">
+          <li className="flex gap-2"><Smartphone className="h-4 w-4 shrink-0 text-primary" /> Abra o app do seu banco e escolha Pix.</li>
+          <li className="flex gap-2"><QrCode className="h-4 w-4 shrink-0 text-primary" /> Escaneie o QR Code ou cole o código copiado.</li>
+          <li className="flex gap-2"><BadgeCheck className="h-4 w-4 shrink-0 text-primary" /> Confirme. O pedido é aprovado na hora.</li>
+        </ol>
+        <p className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground"><ShieldCheck className="h-4 w-4" /> Pagamento processado com segurança pela InvictusPay</p>
       </main>
     );
   }
@@ -134,14 +150,23 @@ function Checkout() {
   return (
     <main className="mx-auto grid max-w-6xl gap-8 px-4 py-8 md:grid-cols-[1fr_400px] md:px-8">
       <form className="space-y-8" onSubmit={(e) => { e.preventDefault(); if (ready && !paying) pay(); }}>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground"><Lock className="h-4 w-4" /> Compra 100% segura</div>
+        <div className="flex items-center justify-between border-b pb-4">
+          <div className="flex items-center gap-2 text-sm font-semibold"><Lock className="h-4 w-4 text-primary" /> Checkout seguro</div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            {["Dados", "Entrega", "Pagamento"].map((st, i) => (
+              <span key={st} className="flex items-center gap-1"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">{i + 1}</span>{st}</span>
+            ))}
+          </div>
+        </div>
 
         <section className="space-y-3">
           <h2 className="text-xl">1. Seus dados</h2>
           <input className={input} type="email" placeholder="E-mail" value={f.email} onChange={set("email")} required />
           <input className={input} placeholder="Nome completo" value={f.name} onChange={set("name")} required />
-          <input className={input} type="tel" placeholder="WhatsApp / Celular" value={f.phone} onChange={set("phone")} required />
-          <input className={input} inputMode="numeric" placeholder="CPF" value={f.cpf} onChange={set("cpf")} maxLength={18} required />
+          <input className={input} type="tel" placeholder="WhatsApp / Celular" value={f.phone} onChange={(e) => setF((s) => ({ ...s, phone: maskPhone(e.target.value) }))} required />
+          <input className={input} inputMode="numeric" placeholder="CPF" value={f.cpf} onChange={(e) => setF((s) => ({ ...s, cpf: maskCpf(e.target.value) }))} required />
+          {f.cpf.replace(/\D/g, "").length === 11 && !isValidCpf(f.cpf) && <p className="text-xs text-destructive">CPF inválido. Confira os números.</p>}
+          <p className="text-xs text-muted-foreground">O CPF é exigido pelo Banco Central para emitir o Pix e a nota fiscal.</p>
         </section>
 
         <section className="space-y-3">
@@ -182,7 +207,7 @@ function Checkout() {
           {paying ? "Gerando Pix…" : <>Pagar com Pix · {formatBRL(total)}</>}
         </button>
         {err && <p className="text-center text-sm text-destructive">{err}</p>}
-        <p className="flex items-center justify-center gap-2 text-xs text-muted-foreground"><ShieldCheck className="h-4 w-4" /> Seus dados estão protegidos</p>
+        <p className="flex items-center justify-center gap-2 text-xs text-muted-foreground"><ShieldCheck className="h-4 w-4" /> Ambiente criptografado · seus dados não são compartilhados</p>
       </form>
 
       <aside className="h-fit space-y-4 border bg-card p-5 md:sticky md:top-6">
@@ -201,10 +226,17 @@ function Checkout() {
           </div>
         ))}
         <div className="space-y-1 border-t pt-4 text-sm">
+          {savings > 0 && <div className="flex justify-between font-semibold text-primary"><span>Você economiza</span><span>-{formatBRL(savings)}</span></div>}
           <div className="flex justify-between"><span>Subtotal</span><span>{formatBRL(subtotal)}</span></div>
           <div className="flex justify-between"><span>Frete</span><span>{options.length ? (shipping ? formatBRL(shipping) : "Grátis") : "Informe o CEP"}</span></div>
           <div className="flex justify-between border-t pt-2 text-lg font-bold"><span>Total</span><span className="text-primary">{formatBRL(total)}</span></div>
         </div>
+        <ul className="space-y-3 border-t pt-4 text-xs">
+          <li className="flex gap-3"><ShieldCheck className="h-5 w-5 shrink-0 text-primary" /><span><b>Compra garantida</b><br />Receba seu pedido ou seu dinheiro de volta.</span></li>
+          <li className="flex gap-3"><RotateCcw className="h-5 w-5 shrink-0 text-primary" /><span><b>7 dias para trocar</b><br />Devolução simples, conforme o Código do Consumidor.</span></li>
+          <li className="flex gap-3"><Truck className="h-5 w-5 shrink-0 text-primary" /><span><b>Envio com rastreio</b><br />Código enviado para o seu e-mail.</span></li>
+          <li className="flex gap-3"><Lock className="h-5 w-5 shrink-0 text-primary" /><span><b>Pagamento seguro</b><br />Pix processado pela InvictusPay.</span></li>
+        </ul>
       </aside>
     </main>
   );
