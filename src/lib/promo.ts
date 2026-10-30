@@ -5,7 +5,7 @@
  */
 export const BLACK_FRIDAY = {
   active: true,
-  percent: 60,
+  percent: 75,
   label: "Black Friday",
   /** Data final usada no contador da campanha. */
   endsAt: "2026-11-30T23:59:59-03:00",
