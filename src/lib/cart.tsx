@@ -22,6 +22,7 @@ interface CartCtx {
   add: (handle: string, variantId: number, qty?: number) => void;
   setQty: (variantId: number, qty: number) => void;
   remove: (variantId: number) => void;
+  clear: () => void;
   checkoutUrl: string;
 }
 
@@ -56,6 +57,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const setQty = useCallback((variantId: number, qty: number) => {
     setRaw((r) => (qty <= 0 ? r.filter((l) => l.variantId !== variantId) : r.map((l) => (l.variantId === variantId ? { ...l, qty } : l))));
   }, []);
+  const clear = useCallback(() => setRaw([]), []);
   const remove = useCallback((variantId: number) => setRaw((r) => r.filter((l) => l.variantId !== variantId)), []);
 
   const lines = useMemo<ResolvedLine[]>(
@@ -80,7 +82,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [lines, subtotal]);
 
   return (
-    <Ctx.Provider value={{ lines, count, subtotal, open, setOpen, add, setQty, remove, checkoutUrl }}>{children}</Ctx.Provider>
+    <Ctx.Provider value={{ lines, count, subtotal, open, setOpen, add, setQty, remove, clear, checkoutUrl }}>{children}</Ctx.Provider>
   );
 }
 

@@ -24,8 +24,8 @@ export const Route = createFileRoute("/checkout")({
 const input = "w-full border border-border bg-background px-3 py-3 text-sm outline-none focus:border-primary";
 
 function Checkout() {
-  const { lines, subtotal, setOpen } = useCart();
-  const [f, setF] = useState({ email: "", name: "", phone: "", cep: "", street: "", number: "", comp: "", district: "", city: "", state: "" });
+  const { lines, subtotal, setOpen, clear } = useCart();
+  const [f, setF] = useState({ email: "", name: "", phone: "", cpf: "", cep: "", street: "", number: "", comp: "", district: "", city: "", state: "" });
   const [cepState, setCepState] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [ship, setShip] = useState<ShippingOption["id"]>("free");
   const [done, setDone] = useState(false);
@@ -55,13 +55,67 @@ function Checkout() {
   const total = subtotal + shipping;
   const ready = f.email.includes("@") && f.name.trim().length > 2 && f.phone.replace(/\D/g, "").length >= 10 && cepState === "ok" && f.street && f.number;
 
+  const createPix = useServerFn(createPixPayment);
+  const checkStatus = useServerFn(getPaymentStatus);
+  const [pix, setPix] = useState<{ id: string; amount: number; code: string | null; image: string | null } | null>(null);
+  const [paying, setPaying] = useState(false);
+  const [err, setErr] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  // Confere a cada 5s se o Pix foi pago.
+  useEffect(() => {
+    if (!pix?.id || done) return;
+    const t = setInterval(async () => {
+      try {
+        const { status } = await checkStatus({ data: { id: pix.id } });
+        if (status === "paid") { setDone(true); clear(); }
+      } catch { /* tenta de novo */ }
+    }, 5000);
+    return () => clearInterval(t);
+  }, [pix?.id, done, checkStatus, clear]);
+
+  async function pay() {
+    setErr(""); setPaying(true);
+    try {
+      const r = await createPix({ data: {
+        items: lines.map((l) => ({ handle: l.handle, variantId: l.variantId, qty: l.qty })),
+        customer: { name: f.name.trim(), email: f.email.trim(), document: f.cpf.replace(/\D/g, ""), phone: f.phone.replace(/\D/g, "") },
+        cep: f.cep, shipping: ship,
+      } });
+      if (!r.ok) setErr(r.error); else setPix(r);
+    } catch { setErr("Não foi possível gerar o Pix. Tente novamente."); }
+    setPaying(false);
+  }
+
   if (done) {
     return (
       <main className="mx-auto max-w-lg px-4 py-20 text-center">
         <Check className="mx-auto h-12 w-12 text-primary" />
-        <h1 className="mt-4 text-3xl">Pedido recebido!</h1>
-        <p className="mt-2 text-sm text-muted-foreground">O pagamento será habilitado em breve. Total: <b>{formatBRL(total)}</b></p>
+        <h1 className="mt-4 text-3xl">Pagamento confirmado!</h1>
+        <p className="mt-2 text-sm text-muted-foreground">Obrigado pela compra. Você receberá as informações do pedido no seu e-mail.</p>
         <Link to="/" className="mt-6 inline-block bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground">Voltar à loja</Link>
+      </main>
+    );
+  }
+
+  if (pix) {
+    const qr = pix.image ? (pix.image.startsWith("http") || pix.image.startsWith("data:") ? pix.image : `data:image/png;base64,${pix.image}`)
+      : pix.code ? `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(pix.code)}` : null;
+    return (
+      <main className="mx-auto max-w-md px-4 py-12 text-center">
+        <h1 className="text-3xl">Pague com Pix</h1>
+        <p className="mt-2 text-sm text-muted-foreground">Total: <b className="text-primary">{formatBRL(pix.amount / 100)}</b> · válido por 30 minutos</p>
+        {qr && <img src={qr} alt="QR Code Pix" className="mx-auto mt-6 h-64 w-64 border bg-background p-2" />}
+        {pix.code && (
+          <>
+            <p className="mt-6 break-all border bg-secondary p-3 text-left text-xs">{pix.code}</p>
+            <button type="button" onClick={() => { navigator.clipboard.writeText(pix.code!); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+              className="mt-3 w-full bg-primary py-4 text-sm font-bold uppercase text-primary-foreground">
+              {copied ? "Código copiado!" : "Copiar código Pix"}
+            </button>
+          </>
+        )}
+        <p className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Aguardando pagamento…</p>
       </main>
     );
   }
