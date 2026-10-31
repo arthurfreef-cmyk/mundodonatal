@@ -1,5 +1,6 @@
 # Integração do Pixel
 
-- [ ] Integrar PageView do Pixel informado sem duplicação e com bloqueio regional sem aviso.
-- [ ] Vincular política de privacidade e opção de desativar a medição.
-- [ ] Testar regras de consentimento e navegação no site.
+- [ ] Registrar PageView, ViewContent, Search, AddToCart, InitiateCheckout, AddPaymentInfo e Purchase nas ações correspondentes.
+- [ ] Atualizar o aviso e preservar o histórico das escolhas de privacidade, sem banner.
+- [x] Ocultar a marca d’água Lovable.
+- [ ] Testar consentimento, eventos e navegação no site.
