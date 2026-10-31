@@ -2,8 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductSection } from "@/components/store/ProductCard";
+import { Countdown } from "@/components/store/Countdown";
 import { ASSET, collectionProducts } from "@/lib/catalog";
 import { BLACK_FRIDAY } from "@/lib/promo";
+
+/** Próximo dia de Natal (25/12) como ISO, para o contador do hero. */
+function nextChristmasTarget(): string {
+  const now = new Date();
+  const y = now.getFullYear();
+  const christmas = new Date(y, 11, 25, 23, 59, 59);
+  return (now.getTime() > christmas.getTime() ? new Date(y + 1, 11, 25, 23, 59, 59) : christmas).toISOString();
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Mundo do Natal | Árvores e Decoração de Natal" }, { name: "description", content: `Árvores realistas e decorações de Natal. Black Friday com ${BLACK_FRIDAY.percent}% OFF em todo o site.` }, { property: "og:title", content: "Mundo do Natal" }, { property: "og:description", content: `Black Friday ${BLACK_FRIDAY.percent}% OFF em árvores e decoração de Natal.` }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }, { property: "og:image", content: ASSET("hero-video-poster-mobile.webp") }, { name: "twitter:image", content: ASSET("hero-video-poster-mobile.webp") }] }),
@@ -17,16 +26,25 @@ const cats = [
 ];
 
 function Index() {
+  const christmasTarget = nextChristmasTarget();
   return (
     <main>
-      <section className="relative h-[280px] overflow-hidden md:h-[310px]">
+      <section className="relative h-[340px] overflow-hidden md:h-[380px]">
         <img src={ASSET("hero-video-poster-mobile.webp")} alt="Árvore de Natal decorada do Mundo do Natal" fetchPriority="high" className="absolute inset-0 h-full w-full object-cover object-[center_60%]" />
         <div className="hero-overlay absolute inset-0" />
         <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-center px-6 text-primary-foreground md:px-8">
           <p className="text-xs font-medium">Coleção Natal 2026</p>
-          <h1 className="mt-3 max-w-md text-4xl leading-tight md:text-5xl">Mundo do Natal</h1>
-          <p className="mt-3 max-w-sm text-sm">Árvores realistas e decorações escolhidas para transformar a sua casa em um cenário inesquecível.</p>
-          <Button asChild size="lg" variant="secondary" className="mt-5 w-fit"><Link to="/collections/$handle" params={{ handle: "arvores-de-natal" }}>Ver árvores de Natal <ArrowRight /></Link></Button>
+          <h1 className="mt-2 max-w-md text-3xl leading-tight md:text-5xl">Mundo do Natal</h1>
+          {BLACK_FRIDAY.active && (
+            <Link to="/black-friday" className="mt-3 flex w-fit items-center gap-2 bg-promo px-3 py-1.5 text-xs font-bold text-promo-foreground">
+              Black Friday · {BLACK_FRIDAY.percent}% OFF em todo o site <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          )}
+          <div className="mt-3 flex items-center gap-3">
+            <span className="text-xs font-medium md:text-sm">Faltam para o Natal:</span>
+            <Countdown target={christmasTarget} compact tone="dark" />
+          </div>
+          <Button asChild size="lg" variant="secondary" className="mt-4 w-fit"><Link to="/collections/$handle" params={{ handle: "arvores-de-natal" }}>Ver árvores de Natal <ArrowRight /></Link></Button>
         </div>
       </section>
       <ProductSection title="Árvores de Natal mais Desejadas" to="/collections/arvores-de-natal" items={collectionProducts("arvores-de-natal").slice(0, 12)} />
