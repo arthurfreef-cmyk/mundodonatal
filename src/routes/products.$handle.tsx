@@ -2,7 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { getProduct, img, variantPrice } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
-import { discountPercent, formatBRL, installment } from "@/lib/promo";
+import { BLACK_FRIDAY, discountPercent, formatBRL, installment } from "@/lib/promo";
 
 export const Route = createFileRoute("/products/$handle")({
   loader: ({ params }) => {
@@ -13,9 +13,15 @@ export const Route = createFileRoute("/products/$handle")({
   head: ({ loaderData }) => ({
     meta: [
       { title: `${loaderData?.product.title ?? "Produto"} | Mundo do Natal` },
-      { name: "description", content: `${loaderData?.product.title ?? ""} com 60% OFF na Black Friday do Mundo do Natal.` },
+      { name: "description", content: `${loaderData?.product.title ?? ""} com ${BLACK_FRIDAY.percent}% OFF na Black Friday do Mundo do Natal.` },
       { property: "og:title", content: loaderData?.product.title ?? "Mundo do Natal" },
-      { property: "og:description", content: "Black Friday 60% OFF no Mundo do Natal." },
+      { property: "og:description", content: `${loaderData?.product.title ?? "Produto"} com ${BLACK_FRIDAY.percent}% OFF no Mundo do Natal.` },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      ...(loaderData?.product.images[0]?.src.startsWith("https://") ? [
+        { property: "og:image", content: loaderData.product.images[0].src },
+        { name: "twitter:image", content: loaderData.product.images[0].src },
+      ] : []),
     ],
   }),
   component: ProductPage,
@@ -26,7 +32,8 @@ function ProductPage() {
   const { add } = useCart();
   const [vi, setVi] = useState(0);
   const [im, setIm] = useState(0);
-  const v = product.variants[vi] ?? product.variants[0]!;
+  const v = product.variants[vi] ?? product.variants[0];
+  if (!v) return null;
   const pp = variantPrice(v);
   return (
     <main className="mx-auto grid max-w-6xl gap-10 px-4 py-10 md:grid-cols-2">

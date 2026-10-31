@@ -5,7 +5,7 @@ import { searchProducts } from "@/lib/catalog";
 
 export const Route = createFileRoute("/search")({
   validateSearch: z.object({ q: z.string().optional().default("") }),
-  head: () => ({ meta: [{ title: "Busca | Mundo do Natal" }, { name: "description", content: "Busque decorações de Natal." }, { property: "og:title", content: "Busca | Mundo do Natal" }, { property: "og:description", content: "Busque decorações de Natal." }] }),
+  head: () => ({ meta: [{ title: "Busca | Mundo do Natal" }, { name: "description", content: "Busque decorações de Natal." }, { property: "og:title", content: "Busca | Mundo do Natal" }, { property: "og:description", content: "Busque decorações de Natal." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => {
     const { q } = Route.useSearch();
     const items = searchProducts(q);

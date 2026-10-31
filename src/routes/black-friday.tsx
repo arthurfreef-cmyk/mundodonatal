@@ -5,7 +5,7 @@ import { products } from "@/lib/catalog";
 import { BLACK_FRIDAY } from "@/lib/promo";
 
 export const Route = createFileRoute("/black-friday")({
-  head: () => ({ meta: [{ title: "Black Friday 60% OFF | Mundo do Natal" }, { name: "description", content: "Todo o site com 60% OFF na Black Friday do Mundo do Natal." }, { property: "og:title", content: "Black Friday 60% OFF | Mundo do Natal" }, { property: "og:description", content: "Árvores, guirlandas e enfeites com 60% OFF." }] }),
+  head: () => ({ meta: [{ title: `Black Friday ${BLACK_FRIDAY.percent}% OFF | Mundo do Natal` }, { name: "description", content: `Todo o site com ${BLACK_FRIDAY.percent}% OFF na Black Friday do Mundo do Natal.` }, { property: "og:title", content: `Black Friday ${BLACK_FRIDAY.percent}% OFF | Mundo do Natal` }, { property: "og:description", content: `Árvores, guirlandas e enfeites com ${BLACK_FRIDAY.percent}% OFF.` }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => (
     <main>
       <section className="promo-shine px-4 py-16 text-center text-promo-foreground">

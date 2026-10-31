@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ProductGrid } from "@/components/store/ProductCard";
 import { collectionProducts, getCollection } from "@/lib/catalog";
+import { BLACK_FRIDAY } from "@/lib/promo";
 
 export const Route = createFileRoute("/collections/$handle")({
   loader: ({ params }) => {
@@ -11,9 +12,11 @@ export const Route = createFileRoute("/collections/$handle")({
   head: ({ loaderData }) => ({
     meta: [
       { title: `${loaderData?.title ?? "Coleção"} | Mundo do Natal` },
-      { name: "description", content: loaderData?.description || "Decoração de Natal com 60% OFF." },
+      { name: "description", content: loaderData?.description || `${loaderData?.title ?? "Decoração de Natal"} com ${BLACK_FRIDAY.percent}% OFF.` },
       { property: "og:title", content: loaderData?.title ?? "Mundo do Natal" },
-      { property: "og:description", content: "Black Friday 60% OFF no Mundo do Natal." },
+      { property: "og:description", content: `${loaderData?.title ?? "Coleção"} na Black Friday ${BLACK_FRIDAY.percent}% OFF no Mundo do Natal.` },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: () => {
