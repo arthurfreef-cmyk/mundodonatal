@@ -1,9 +1,9 @@
 # Integração do Pixel
 
 ## Revisão da loja
-- [ ] Restaurar na barra vermelha o texto Black Friday · 75% OFF em todo o site, preservando a barra preta rolante.
-- [ ] Corrigir problemas encontrados na navegação, carrinho, formulários e apresentação, preservando preços e Pix.
-- [ ] Verificar os fluxos da loja e executar testes de regressão.
+- [ ] Remover a barra vermelha e manter somente a preta rolante, conforme o pedido mais recente.
+- [x] Corrigir carrinho inválido/armazenamento bloqueado, menu acessível, endereço antigo ao mudar CEP, cópia Pix sem confirmação, avisos incorretos e overflow no rodapé, preservando preços e Pix.
+- [x] Verificar produto → carrinho → checkout com CEP real, busca no celular e larguras de 320 a 1334 px; 20 testes passaram, sem gerar cobrança.
 
 ## Barras do topo e carregamento
 - [x] Restaurar a faixa rolante do topo preservando a Black Friday e o cabeçalho.

@@ -44,9 +44,6 @@ export function Header() {
           </div>
         </Link>
       )}
-      <div className="bg-primary text-primary-foreground">
-        {BLACK_FRIDAY.active && <Link to="/black-friday" className="block px-4 py-2 text-center text-xs font-semibold">Black Friday · {BLACK_FRIDAY.percent}% OFF em todo o site</Link>}
-      </div>
       <div className="border-b">
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 md:px-8">
           <Button variant="ghost" size="icon" className="md:hidden" aria-label="Abrir menu" onClick={() => setMenu(true)}>
