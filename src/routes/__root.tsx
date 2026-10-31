@@ -17,6 +17,7 @@ import { Header } from "@/components/store/Header";
 import { Footer } from "@/components/store/Footer";
 import { CartDrawer } from "@/components/store/CartDrawer";
 import { Toaster } from "@/components/ui/sonner";
+import { MetaPixel } from "@/components/store/MetaPixel";
 
 function NotFoundComponent() {
   return (
@@ -121,6 +122,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <MetaPixel />
       <CartProvider>
         <Header />
         <Outlet />

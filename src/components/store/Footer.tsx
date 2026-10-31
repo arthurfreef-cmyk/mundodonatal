@@ -79,7 +79,9 @@ function FooterCol({ title, items }: { title: string; items: string[] }) {
   return (
     <div>
       <p className="eyebrow text-accent">{title}</p>
-      <ul className="mt-4 space-y-3 text-xs opacity-80">{items.map((i) => <li key={i}>{i}</li>)}</ul>
+      <ul className="mt-4 space-y-3 text-xs opacity-80">{items.map((i) => <li key={i}>{i === "Política de Privacidade" ? <Link to="/privacidade" className="hover:underline">{i}</Link> : i}</li>)}
+        {title === "Políticas" && <li><Link to="/privacidade" hash="cookies" className="hover:underline">Configurações de cookies</Link></li>}
+      </ul>
     </div>
   );
 }
