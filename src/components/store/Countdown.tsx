@@ -25,7 +25,7 @@ export function Countdown({ target, tone = "dark", compact = false }: { target: 
   return (
     <div className={`flex ${compact ? "gap-1.5" : "gap-2"}`} role="timer">
       {items.map(([l, v]) => (
-        <div key={l} className={`${compact ? "w-11 py-1.5" : "w-16 border py-2"} text-center ${compact ? box : box}`}>
+        <div key={l} className={`border text-center ${compact ? "w-11 py-1.5" : "w-16 py-2"} ${box}`}>
           <div className={`font-heading ${compact ? "text-lg" : "text-3xl"}`}>{v === undefined ? "--" : String(v).padStart(2, "0")}</div>
           <div className={`eyebrow opacity-70 ${compact ? "text-[9px]" : ""}`}>{l}</div>
         </div>
