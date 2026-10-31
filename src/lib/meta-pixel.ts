@@ -22,6 +22,9 @@ declare global {
 let initialized = false;
 let lastPath: string | null = null;
 let revoked = false;
+let currentRegion: string | null = null;
+const sentEvents = new Set<string>();
+export type MetaEventName = "ViewContent" | "Search" | "AddToCart" | "InitiateCheckout" | "AddPaymentInfo" | "Purchase";
 const PRIVATE_PARAMETER = /^(email|e-mail|phone|telefone|celular|cpf|cnpj|name|nome|first_name|last_name|address|endereco|token|access_token|password|senha|customer.*)$/i;
 
 function hasPrivateUrlData(url: URL): boolean {
@@ -57,7 +60,7 @@ function initializePixel(): FacebookPixel {
     window._fbq ??= stub;
   }
   if (!initialized) {
-    // No automatic event detection or form-data matching; PageView only.
+    // Explicit commerce events only: no automatic form-data collection.
     pixel("set", "autoConfig", false, META_PIXEL_ID);
     pixel("init", META_PIXEL_ID, {}, { agent: "lovable" });
     initialized = true;
@@ -73,6 +76,7 @@ function initializePixel(): FacebookPixel {
 }
 
 export function syncMetaPermission(region: string | null): void {
+  currentRegion = region;
   if (typeof window === "undefined" || !initialized || !window.fbq) return;
   const allowed = currentAdvertisingPermission(region) && safePageUrl();
   if (!allowed) {
@@ -84,6 +88,23 @@ export function syncMetaPermission(region: string | null): void {
     window.fbq("consent", "grant");
     revoked = false;
   }
+}
+
+export function trackMetaEvent(name: MetaEventName, parameters: Record<string, unknown>, eventId?: string): boolean {
+  if (typeof window === "undefined" || !currentAdvertisingPermission(currentRegion) || !safePageUrl()) return false;
+  const key = eventId ? `${name}:${eventId}` : null;
+  if (key && sentEvents.has(key)) return false;
+  if (key) {
+    try { if (sessionStorage.getItem(`mdn-meta:${key}`)) return false; } catch { /* Memory dedup remains available. */ }
+  }
+  syncMetaPermission(currentRegion);
+  const pixel = initializePixel();
+  pixel("track", name, parameters, { eventID: eventId ?? crypto.randomUUID() });
+  if (key) {
+    sentEvents.add(key);
+    try { sessionStorage.setItem(`mdn-meta:${key}`, "sent"); } catch { /* No checkout dependency on advertising storage. */ }
+  }
+  return true;
 }
 
 export function trackMetaPageView(pathname: string, region: string | null): boolean {

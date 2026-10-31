@@ -60,7 +60,7 @@ function PrivacyPage() {
       <section className="mt-8 space-y-4 text-sm leading-relaxed">
         <h2 className="text-2xl">Dados de navegação e publicidade</h2>
         <p>{AD_NOTICE.text}</p>
-        <p>A Meta pode utilizar esses dados conforme sua própria política para medição, atribuição e personalização de anúncios. Esta integração envia somente visitas (PageView), não confirma compras nem envia dados de clientes para correspondência de identidade.</p>
+        <p>A Meta pode utilizar esses dados conforme sua própria política para medição, atribuição e personalização de anúncios. Enviamos PageView, ViewContent, Search sem o texto pesquisado, AddToCart, InitiateCheckout, AddPaymentInfo e Purchase somente após a confirmação de pagamento. Não enviamos dados de clientes para correspondência de identidade.</p>
         <p>O Pixel usa cookies de publicidade, como _fbp e, quando aplicável, _fbc. Não carregamos o Pixel antes da permissão em regiões que exigem consentimento, incluindo Brasil, União Europeia, Espaço Econômico Europeu, Reino Unido e Suíça. Se a localização não puder ser confirmada, a publicidade permanece bloqueada. Fora dessas regiões, a medição pode ficar ativa, respeitando recusas e sinais de privacidade do navegador.</p>
         <p>Mais informações na <a className="text-primary underline" href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noreferrer">Política de Privacidade da Meta</a>.</p>
       </section>
