@@ -15,3 +15,5 @@
 - Preserve legacy advertising notices and refusals when expanding measurement; only acceptance of the current notice authorizes the expanded events in consent regions.
 - Use shared Button variants for storefront shopping actions, with a dedicated commerce variant, to keep tap targets and focus states consistent.
 - Keep checkout presentation in focused store components and use a simplified checkout header so commerce and payment behavior remain separate from visual changes.
+- Keep storefront announcement strips in Header, excluding checkout; use equal repeated groups for seamless scrolling and honor reduced motion.
+- Use responsive product image sources and defer alternate product photos until pointer or keyboard interaction to reduce initial image downloads without changing the catalog.

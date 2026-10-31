@@ -90,6 +90,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "preconnect", href: "https://mundodonatal.com" },
+      { rel: "preconnect", href: "https://cdn.shopify.com" },
+      { rel: "preconnect", href: "https://mundodonatal.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
         href: appCss,

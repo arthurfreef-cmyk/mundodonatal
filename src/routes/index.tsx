@@ -47,7 +47,7 @@ function Index() {
           <Button asChild size="lg" variant="secondary" className="mt-4 w-fit"><Link to="/collections/$handle" params={{ handle: "arvores-de-natal" }}>Ver árvores de Natal <ArrowRight /></Link></Button>
         </div>
       </section>
-      <ProductSection title="Árvores de Natal mais Desejadas" to="/collections/arvores-de-natal" items={collectionProducts("arvores-de-natal").slice(0, 12)} />
+      <ProductSection title="Árvores de Natal mais Desejadas" to="/collections/arvores-de-natal" items={collectionProducts("arvores-de-natal").slice(0, 12)} prioritizeFirstRow />
       <section className="border-y bg-muted px-4 py-8 md:py-10">
         <h2 className="text-center text-3xl">Decore cada detalhe</h2>
         <div className="mx-auto mt-6 grid max-w-6xl grid-cols-3 gap-3 md:gap-6">
