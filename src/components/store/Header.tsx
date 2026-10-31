@@ -49,12 +49,6 @@ export function Header() {
           <a className="hidden underline md:inline" href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer">Atendimento especializado</a>
         </div>
       </div>
-      <div className="bg-primary text-primary-foreground">
-        <div className="mx-auto flex max-w-7xl justify-center gap-8 px-4 py-2 text-[11px] md:gap-16">
-          <span>Frete grátis — consulte condições</span>
-          <a className="hidden underline md:inline" href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer">Atendimento especializado</a>
-        </div>
-      </div>
       <div className="border-b">
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 md:px-8">
           <Button variant="ghost" size="icon" className="md:hidden" aria-label="Abrir menu" onClick={() => setMenu(true)}>
