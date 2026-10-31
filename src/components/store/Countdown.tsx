@@ -12,7 +12,7 @@ const calc = (target: number): Parts => {
 };
 
 /** Contador ao vivo. Só calcula no navegador para não divergir do HTML do servidor. */
-export function Countdown({ target, tone = "dark" }: { target: string; tone?: "dark" | "promo" }) {
+export function Countdown({ target, tone = "dark", compact = false }: { target: string; tone?: "dark" | "promo"; compact?: boolean }) {
   const [p, setP] = useState<Parts | null>(null);
   useEffect(() => {
     const t = new Date(target).getTime();
@@ -23,11 +23,11 @@ export function Countdown({ target, tone = "dark" }: { target: string; tone?: "d
   const box = tone === "promo" ? "border-promo-foreground/40 text-promo-foreground" : "border-secondary-foreground/30 bg-secondary-foreground/5";
   const items: [string, number | undefined][] = [["Dias", p?.d], ["Horas", p?.h], ["Min", p?.m], ["Seg", p?.s]];
   return (
-    <div className="flex gap-2" role="timer">
+    <div className={`flex ${compact ? "gap-1.5" : "gap-2"}`} role="timer">
       {items.map(([l, v]) => (
-        <div key={l} className={`w-16 border py-2 text-center ${box}`}>
-          <div className="font-heading text-3xl">{v === undefined ? "--" : String(v).padStart(2, "0")}</div>
-          <div className="eyebrow opacity-70">{l}</div>
+        <div key={l} className={`${compact ? "w-11 py-1.5" : "w-16 border py-2"} text-center ${compact ? box : box}`}>
+          <div className={`font-heading ${compact ? "text-lg" : "text-3xl"}`}>{v === undefined ? "--" : String(v).padStart(2, "0")}</div>
+          <div className={`eyebrow opacity-70 ${compact ? "text-[9px]" : ""}`}>{l}</div>
         </div>
       ))}
     </div>
