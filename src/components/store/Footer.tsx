@@ -67,7 +67,7 @@ export function Footer() {
           <div>
             <p className="eyebrow text-accent">Fale conosco</p>
             <p className="mt-4 text-xs font-semibold">E-mail</p>
-            <p className="text-xs opacity-70">atendimento@mundodonatal.com</p>
+            <p className="break-words text-xs opacity-70">atendimento@mundodonatal.com</p>
             <p className="mt-3 text-xs font-semibold">Horário de atendimento</p>
             <p className="text-xs opacity-70">Segunda a sexta, das 9h às 18h</p>
             <a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer" className="mt-3 inline-block text-xs text-accent">WhatsApp</a>
