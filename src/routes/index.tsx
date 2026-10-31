@@ -2,8 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductSection } from "@/components/store/ProductCard";
+import { Countdown } from "@/components/store/Countdown";
 import { ASSET, collectionProducts } from "@/lib/catalog";
 import { BLACK_FRIDAY } from "@/lib/promo";
+
+/** Próximo dia de Natal (25/12) como ISO, para o contador do hero. */
+function nextChristmasTarget(): string {
+  const now = new Date();
+  const y = now.getFullYear();
+  const christmas = new Date(y, 11, 25, 23, 59, 59);
+  return (now.getTime() > christmas.getTime() ? new Date(y + 1, 11, 25, 23, 59, 59) : christmas).toISOString();
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Mundo do Natal | Árvores e Decoração de Natal" }, { name: "description", content: `Árvores realistas e decorações de Natal. Black Friday com ${BLACK_FRIDAY.percent}% OFF em todo o site.` }, { property: "og:title", content: "Mundo do Natal" }, { property: "og:description", content: `Black Friday ${BLACK_FRIDAY.percent}% OFF em árvores e decoração de Natal.` }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }, { property: "og:image", content: ASSET("hero-video-poster-mobile.webp") }, { name: "twitter:image", content: ASSET("hero-video-poster-mobile.webp") }] }),
