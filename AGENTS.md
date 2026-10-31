@@ -11,4 +11,5 @@
 
 - Keep browser advertising permission in `advertising-consent.ts` and Pixel dispatch in `meta-pixel.ts`; a single root listener handles navigation to avoid duplicate installs and centralize regional blocking.
 - Persist browser advertising choices as versioned notice evidence with visitor, timestamp, region and preserved history; this is a local privacy preference, not a customer database.
-- Advertise only PageView through the browser Pixel with automatic event collection disabled; customer matching and payment reporting are not part of this integration.
+- Send only explicitly wired standard commerce events through the browser Pixel, with automatic form collection and customer matching disabled; Purchase requires a confirmed paid status and the processor's actual amount, never Pix creation.
+- Preserve legacy advertising notices and refusals when expanding measurement; only acceptance of the current notice authorizes the expanded events in consent regions.

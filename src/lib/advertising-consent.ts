@@ -1,7 +1,12 @@
 // A notice version always resolves to the exact data, purpose, recipient and choices shown.
-export const AD_NOTICE_VERSION = "meta-pageview-2026-10-31-v1";
-export const AD_NOTICE = {
+const LEGACY_NOTICE_VERSION = "meta-pageview-2026-10-31-v1";
+const LEGACY_NOTICE = {
   text: "O Pixel da Meta compartilha páginas visitadas, horário, endereço IP, informações do navegador e identificadores de cookies com a Meta Platforms para medir visitas e resultados de anúncios no Facebook e Instagram. Não enviamos dados dos formulários, CPF, e-mail, telefone ou pagamentos. Você pode permitir ou recusar cookies de publicidade e alterar sua escolha nesta página a qualquer momento.",
+  choices: ["Permitir publicidade", "Recusar publicidade"],
+} as const;
+export const AD_NOTICE_VERSION = "meta-commerce-2026-10-31-v2";
+export const AD_NOTICE = {
+  text: "O Pixel da Meta compartilha páginas e produtos visitados, buscas sem o texto pesquisado, itens adicionados ao carrinho, início do checkout, escolha de Pix e compras pagas (produtos, quantidades, valor e moeda), horário, endereço IP, informações do navegador e identificadores de cookies com a Meta Platforms para medir resultados e otimizar anúncios no Facebook e Instagram. Não enviamos CPF, e-mail, telefone, endereço, dados dos formulários ou código Pix. Você pode permitir ou recusar publicidade e alterar sua escolha nesta página a qualquer momento.",
   choices: ["Permitir publicidade", "Recusar publicidade"],
 } as const;
 export const AD_STORAGE_KEY = "mundo-natal-advertising-consent-v1";
@@ -17,8 +22,8 @@ export interface AdvertisingChoice {
   advertising: boolean;
   recordedAt: string;
   region: string | null;
-  noticeVersion: typeof AD_NOTICE_VERSION;
-  notice: typeof AD_NOTICE;
+  noticeVersion: typeof AD_NOTICE_VERSION | typeof LEGACY_NOTICE_VERSION;
+  notice: typeof AD_NOTICE | typeof LEGACY_NOTICE;
 }
 
 export interface AdvertisingRecord {
@@ -38,8 +43,9 @@ export function traceRegion(trace: string, hostname: string): string | null {
     const separator = line.indexOf("=");
     return [line.slice(0, separator), line.slice(separator + 1)];
   }));
-  if (lines.h !== hostname || !/^[A-Z]{2}$/.test(lines.loc ?? "") || lines.loc === "XX" || lines.loc === "T1") return null;
-  return lines.loc;
+  const region = lines["loc"];
+  if (lines["h"] !== hostname || !region || !/^[A-Z]{2}$/.test(region) || region === "XX" || region === "T1") return null;
+  return region;
 }
 
 let regionLookup: Promise<string | null> | undefined;
@@ -71,8 +77,9 @@ export function readAdvertisingRecord(): AdvertisingRecord | null {
       if (!entry || typeof entry !== "object") return false;
       return "advertising" in entry && typeof entry.advertising === "boolean" &&
         "recordedAt" in entry && typeof entry.recordedAt === "string" && !Number.isNaN(Date.parse(entry.recordedAt)) &&
-        "noticeVersion" in entry && entry.noticeVersion === AD_NOTICE_VERSION &&
-        "notice" in entry && JSON.stringify(entry.notice) === JSON.stringify(AD_NOTICE) &&
+        "noticeVersion" in entry && "notice" in entry &&
+        ((entry.noticeVersion === AD_NOTICE_VERSION && JSON.stringify(entry.notice) === JSON.stringify(AD_NOTICE)) ||
+          (entry.noticeVersion === LEGACY_NOTICE_VERSION && JSON.stringify(entry.notice) === JSON.stringify(LEGACY_NOTICE))) &&
         "region" in entry && (entry.region === null || typeof entry.region === "string");
     })) return null;
     return value as AdvertisingRecord;
@@ -88,7 +95,10 @@ export function hasAdvertisingOptOut(): boolean {
 }
 
 export function currentAdvertisingPermission(region: string | null): boolean {
-  return advertisingAllowed(region, readAdvertisingRecord()?.history.at(-1)?.advertising, hasAdvertisingOptOut());
+  const latest = readAdvertisingRecord()?.history.at(-1);
+  // A refusal survives notice changes; old acceptance does not cover new data.
+  const choice = latest?.advertising === false ? false : latest?.noticeVersion === AD_NOTICE_VERSION ? latest.advertising : undefined;
+  return advertisingAllowed(region, choice, hasAdvertisingOptOut());
 }
 
 export function saveAdvertisingChoice(advertising: boolean, region: string | null): boolean {

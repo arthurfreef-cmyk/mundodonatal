@@ -2,6 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { getProduct, variantPrice, type Product, type Variant } from "./catalog";
 import { formatBRL } from "./promo";
 import { WHATSAPP } from "./catalog";
+import { trackMetaEvent } from "./meta-pixel";
+import { productEventParameters } from "./meta-commerce";
 
 export interface CartLine {
   handle: string;
@@ -47,6 +49,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [raw]);
 
   const add = useCallback((handle: string, variantId: number, qty = 1) => {
+    const product = getProduct(handle);
+    const variant = product?.variants.find((item) => item.id === variantId);
+    if (product && variant) trackMetaEvent("AddToCart", productEventParameters(product, variant, qty));
     setRaw((r) => {
       const ex = r.find((l) => l.variantId === variantId);
       if (ex) return r.map((l) => (l.variantId === variantId ? { ...l, qty: l.qty + qty } : l));

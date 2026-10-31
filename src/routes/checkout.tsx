@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BadgeCheck, Check, Clock, Loader2, Lock, QrCode, RotateCcw, ShieldCheck, Smartphone, Truck } from "lucide-react";
 import { img, variantPrice } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
@@ -9,6 +9,9 @@ import { cn } from "@/lib/utils";
 import { isValidCpf, maskCpf, maskPhone } from "@/lib/br";
 import { useServerFn } from "@tanstack/react-start";
 import { createPixPayment, getPaymentStatus } from "@/lib/payments.functions";
+import { syncMetaPermission, trackMetaEvent } from "@/lib/meta-pixel";
+import { resolveAdvertisingRegion } from "@/lib/advertising-consent";
+import { cartEventParameters, type MetaCartItem } from "@/lib/meta-commerce";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -32,6 +35,17 @@ function Checkout() {
   const [cepState, setCepState] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [ship, setShip] = useState<ShippingOption["id"]>("free");
   const [done, setDone] = useState(false);
+  const checkoutStarted = useRef(false);
+  const paymentConfirmed = useRef(false);
+  const paidItems = useRef<MetaCartItem[]>([]);
+  useEffect(() => {
+    if (!lines.length || checkoutStarted.current) return;
+    checkoutStarted.current = true;
+    void resolveAdvertisingRegion().then((region) => {
+      syncMetaPermission(region);
+      trackMetaEvent("InitiateCheckout", cartEventParameters(lines));
+    });
+  }, [lines]);
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement>) => setF((s) => ({ ...s, [k]: e.target.value }));
 
   useEffect(() => setOpen(false), [setOpen]);
@@ -79,11 +93,15 @@ function Checkout() {
     const t = setInterval(async () => {
       try {
         const { status } = await checkStatus({ data: { id: pix.id } });
-        if (status === "paid") { setDone(true); clear(); }
+        if (status === "paid" && !paymentConfirmed.current) {
+          paymentConfirmed.current = true;
+          trackMetaEvent("Purchase", cartEventParameters(paidItems.current, pix.amount / 100), `pix-${pix.id}`);
+          setDone(true); clear();
+        }
       } catch { /* tenta de novo */ }
     }, 5000);
     return () => clearInterval(t);
-  }, [pix?.id, done, checkStatus, clear]);
+  }, [pix, done, checkStatus, clear]);
 
   async function pay() {
     setErr(""); setPaying(true);
@@ -93,7 +111,11 @@ function Checkout() {
         customer: { name: f.name.trim(), email: f.email.trim(), document: f.cpf.replace(/\D/g, ""), phone: f.phone.replace(/\D/g, "") },
         cep: f.cep, shipping: ship,
       } });
-      if (!r.ok) setErr(r.error); else setPix(r);
+      if (!r.ok) setErr(r.error); else {
+        paidItems.current = lines.map(({ variantId, qty, unit }) => ({ variantId, qty, unit }));
+        trackMetaEvent("AddPaymentInfo", { ...cartEventParameters(paidItems.current, r.amount / 100), payment_method: "Pix" }, `pix-${r.id}`);
+        setPix(r);
+      }
     } catch { setErr("Não foi possível gerar o Pix. Tente novamente."); }
     setPaying(false);
   }
@@ -121,7 +143,7 @@ function Checkout() {
         {pix.code && (
           <>
             <p className="mt-6 break-all border bg-secondary p-3 text-left text-xs">{pix.code}</p>
-            <button type="button" onClick={() => { navigator.clipboard.writeText(pix.code!); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+            <button type="button" onClick={() => { if (!pix.code) return; navigator.clipboard.writeText(pix.code); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
               className="mt-3 w-full bg-primary py-4 text-sm font-bold uppercase text-primary-foreground">
               {copied ? "Código copiado!" : "Copiar código Pix"}
             </button>
