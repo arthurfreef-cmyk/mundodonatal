@@ -1,5 +1,10 @@
 # Integração do Pixel
 
+## Barras do topo e carregamento
+- [x] Restaurar a faixa rolante do topo preservando a Black Friday e o cabeçalho.
+- [x] Otimizar a prioridade e o tamanho das imagens sem alterar catálogo ou design; fotos alternativas carregam na interação.
+- [x] Verificar a página e navegação em telas grandes e pequenas; 17 testes passaram, sem erros de execução, fluxo produto → carrinho → checkout confirmado.
+
 ## Apresentação da loja e checkout
 - [x] Reduzir excessos antes das árvores e melhorar os botões mantendo a identidade da loja.
 - [x] Melhorar a apresentação do checkout com CTA COMPRAR AGORA, sem alterar pagamentos, preços ou consentimento.

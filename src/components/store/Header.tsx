@@ -31,10 +31,25 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 bg-background">
       {BLACK_FRIDAY.active && (
-        <Link to="/black-friday" className="flex min-h-9 items-center justify-center gap-3 bg-primary px-4 py-2 text-center text-xs font-medium text-primary-foreground">
-          Black Friday · {BLACK_FRIDAY.percent}% OFF <span className="hidden border-l border-primary-foreground/30 pl-3 sm:inline">Frete grátis disponível</span>
+        <Link to="/black-friday" aria-label={`Black Friday · ${BLACK_FRIDAY.percent}% OFF em todo o site`} className="promo-shine block overflow-hidden text-promo-foreground">
+          <div aria-hidden="true" className="flex w-max animate-marquee py-2 text-xs font-bold uppercase motion-reduce:animate-none">
+            {["first", "repeat"].map((group) => (
+              <div key={group} className="flex shrink-0 gap-12 pr-12">
+                {["one", "two", "three", "four", "five", "six"].map((item) => (
+                  <span key={item}>★ Black Friday · {BLACK_FRIDAY.percent}% OFF em todo o site</span>
+                ))}
+              </div>
+            ))}
+          </div>
         </Link>
       )}
+      <div className="bg-primary text-primary-foreground">
+        <div className="mx-auto flex max-w-7xl justify-center gap-8 px-4 py-2 text-[11px] md:gap-16">
+          <span>Frete grátis — consulte condições</span>
+          <span className="hidden md:inline">Parcele em até 3x sem juros; demais parcelas com juros</span>
+          <a className="hidden underline md:inline" href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer">Atendimento especializado</a>
+        </div>
+      </div>
       <div className="border-b">
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 md:px-8">
           <Button variant="ghost" size="icon" className="md:hidden" aria-label="Abrir menu" onClick={() => setMenu(true)}>
