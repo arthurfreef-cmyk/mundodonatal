@@ -110,7 +110,7 @@ export function trackMetaEvent(name: MetaEventName, parameters: Record<string, u
 export function trackMetaPageView(pathname: string, region: string | null): boolean {
   if (typeof window === "undefined") return false;
   syncMetaPermission(region);
-  if (!currentAdvertisingPermission(region) || !safePageUrl() || pathname !== window.location.pathname || lastPath === pathname) return false;
+  if (!currentAdvertisingPermission(region) || !safePageUrl() || pathname !== window.location.pathname || lastPath === window.location.href) return false;
   const pixel = initializePixel();
   if (revoked) {
     pixel("consent", "grant");
@@ -118,6 +118,6 @@ export function trackMetaPageView(pathname: string, region: string | null): bool
   }
   // One PageView per actual page, including client-side navigation.
   pixel("track", "PageView");
-  lastPath = pathname;
+  lastPath = window.location.href;
   return true;
 }
