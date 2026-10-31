@@ -1,9 +1,9 @@
 # Integração do Pixel
 
 ## Apresentação da loja e checkout
-- [ ] Reduzir excessos antes das árvores e melhorar os botões mantendo a identidade da loja.
-- [ ] Melhorar a apresentação do checkout com CTA COMPRAR AGORA, sem alterar pagamentos, preços ou consentimento.
-- [ ] Verificar navegação, carrinho e checkout em telas grandes e pequenas.
+- [x] Reduzir excessos antes das árvores e melhorar os botões mantendo a identidade da loja.
+- [x] Melhorar a apresentação do checkout com CTA COMPRAR AGORA, sem alterar pagamentos, preços ou consentimento.
+- [x] Verificar navegação, carrinho e checkout em telas grandes e pequenas, com CEP real e sem gerar cobrança; 16 testes passaram.
 
 ## Medição existente
 
