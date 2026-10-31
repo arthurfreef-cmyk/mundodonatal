@@ -1,13 +1,15 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, Package, Search, ShoppingBag, User, X } from "lucide-react";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, Lock, Menu, Package, Search, ShoppingBag, X } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { ASSET, NAV, WHATSAPP } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
 import { BLACK_FRIDAY } from "@/lib/promo";
+import { Button } from "@/components/ui/button";
 
 export function Header() {
   const { count, setOpen } = useCart();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [q, setQ] = useState("");
   const [menu, setMenu] = useState(false);
 
@@ -16,31 +18,28 @@ export function Header() {
     if (q.trim()) navigate({ to: "/search", search: { q: q.trim() } });
   };
 
+  if (pathname === "/checkout") return (
+    <header className="sticky top-0 z-40 border-b bg-background">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 md:px-8">
+        <Button asChild variant="ghost" size="icon"><Link to="/" aria-label="Voltar à loja"><ArrowLeft /></Link></Button>
+        <Link to="/" aria-label="Mundo do Natal"><img src={ASSET("logo-mundo-do-natal-favicon-v1.png")} alt="Mundo do Natal" className="h-12 w-auto" /></Link>
+        <span className="flex items-center gap-1.5 text-xs text-secondary"><Lock className="h-4 w-4" /><span className="hidden sm:inline">Compra segura</span></span>
+      </div>
+    </header>
+  );
+
   return (
     <header className="sticky top-0 z-40 bg-background">
       {BLACK_FRIDAY.active && (
-        <Link to="/black-friday" className="promo-shine block overflow-hidden text-promo-foreground">
-          <div className="flex w-max animate-marquee gap-12 py-2 text-xs font-bold uppercase tracking-[0.2em]">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <span key={i}>★ Black Friday · {BLACK_FRIDAY.percent}% OFF em todo o site</span>
-            ))}
-          </div>
+        <Link to="/black-friday" className="flex min-h-9 items-center justify-center gap-3 bg-primary px-4 py-2 text-center text-xs font-medium text-primary-foreground">
+          Black Friday · {BLACK_FRIDAY.percent}% OFF <span className="hidden border-l border-primary-foreground/30 pl-3 sm:inline">Frete grátis disponível</span>
         </Link>
       )}
-      <div className="bg-primary text-primary-foreground">
-        <div className="mx-auto flex max-w-7xl justify-center gap-8 px-4 py-2 text-[11px] md:gap-16">
-          <span>Frete grátis — consulte condições</span>
-          <span className="hidden md:inline">Parcele em até 3x sem juros; demais parcelas com juros</span>
-          <a className="hidden underline md:inline" href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer">
-            Atendimento especializado
-          </a>
-        </div>
-      </div>
       <div className="border-b">
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 md:px-8">
-          <button className="md:hidden" aria-label="Abrir menu" onClick={() => setMenu(true)}>
+          <Button variant="ghost" size="icon" className="md:hidden" aria-label="Abrir menu" onClick={() => setMenu(true)}>
             <Menu className="h-5 w-5" />
-          </button>
+          </Button>
           <Link to="/" className="shrink-0">
             <img src={ASSET("logo-mundo-do-natal-favicon-v1.png")} alt="Mundo do Natal" className="h-12 w-auto md:h-14" />
           </Link>
@@ -53,20 +52,19 @@ export function Header() {
                 className="w-full bg-transparent py-2 text-sm outline-none"
                 aria-label="Buscar"
               />
-              <Search className="h-4 w-4" />
+              <Button type="submit" variant="ghost" size="icon" aria-label="Pesquisar"><Search /></Button>
             </label>
           </form>
           <div className="ml-auto flex items-center gap-5 text-primary">
-            <User className="hidden h-5 w-5 text-foreground md:block" aria-hidden />
             <a href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Olá! Quero acompanhar meu pedido.")}`} target="_blank" rel="noreferrer" className="hidden items-center gap-2 text-xs font-medium md:flex">
               <Package className="h-4 w-4" /> Acompanhar pedido
             </a>
-            <button aria-label="Abrir carrinho" onClick={() => setOpen(true)} className="relative text-foreground">
+            <Button variant="ghost" size="icon" aria-label="Abrir carrinho" onClick={() => setOpen(true)} className="relative text-foreground">
               <ShoppingBag className="h-5 w-5" />
               <span className="absolute -right-2 -top-2 grid h-4 min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] text-primary-foreground">
                 {count}
               </span>
-            </button>
+            </Button>
           </div>
         </div>
         <nav className="hidden border-t md:block" aria-label="Principal">
@@ -98,7 +96,7 @@ export function Header() {
       {menu && (
         <div className="fixed inset-0 z-50 bg-ink/50 md:hidden" onClick={() => setMenu(false)}>
           <div className="h-full w-80 max-w-[85%] overflow-y-auto bg-background p-6" onClick={(e) => e.stopPropagation()}>
-            <button aria-label="Fechar menu" onClick={() => setMenu(false)} className="mb-6"><X className="h-5 w-5" /></button>
+            <Button variant="ghost" size="icon" aria-label="Fechar menu" onClick={() => setMenu(false)} className="mb-6"><X className="h-5 w-5" /></Button>
             <form onSubmit={(e) => { onSearch(e); setMenu(false); }} className="mb-6">
               <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar..." className="w-full rounded-sm border bg-cream px-3 py-2 text-sm" />
             </form>

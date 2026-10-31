@@ -1,17 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { BadgeCheck, Check, Clock, Loader2, Lock, QrCode, RotateCcw, ShieldCheck, Smartphone, Truck } from "lucide-react";
-import { img, variantPrice } from "@/lib/catalog";
+import { BadgeCheck, Check, Clock, Loader2, QrCode, ShieldCheck, Smartphone } from "lucide-react";
+import { variantPrice } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/lib/promo";
-import { cleanCep, lookupCep, maskCep, shippingOptions, type ShippingOption } from "@/lib/shipping";
-import { cn } from "@/lib/utils";
-import { isValidCpf, maskCpf, maskPhone } from "@/lib/br";
+import { cleanCep, lookupCep, shippingOptions, type ShippingOption } from "@/lib/shipping";
+import { isValidCpf } from "@/lib/br";
 import { useServerFn } from "@tanstack/react-start";
 import { createPixPayment, getPaymentStatus } from "@/lib/payments.functions";
 import { syncMetaPermission, trackMetaEvent } from "@/lib/meta-pixel";
 import { resolveAdvertisingRegion } from "@/lib/advertising-consent";
 import { cartEventParameters, type MetaCartItem } from "@/lib/meta-commerce";
+import { Button } from "@/components/ui/button";
+import { CheckoutDetails } from "@/components/store/CheckoutDetails";
+import { CheckoutSummary } from "@/components/store/CheckoutSummary";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -27,7 +29,7 @@ export const Route = createFileRoute("/checkout")({
   component: Checkout,
 });
 
-const input = "w-full border border-border bg-background px-3 py-3 text-sm outline-none focus:border-primary";
+
 
 function Checkout() {
   const { lines, subtotal, setOpen, clear } = useCart();
@@ -46,7 +48,6 @@ function Checkout() {
       trackMetaEvent("InitiateCheckout", cartEventParameters(lines));
     });
   }, [lines]);
-  const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement>) => setF((s) => ({ ...s, [k]: e.target.value }));
 
   useEffect(() => setOpen(false), [setOpen]);
 
@@ -126,7 +127,7 @@ function Checkout() {
         <Check className="mx-auto h-12 w-12 text-primary" />
         <h1 className="mt-4 text-3xl">Pagamento confirmado!</h1>
         <p className="mt-2 text-sm text-muted-foreground">Obrigado pela compra. Você receberá as informações do pedido no seu e-mail.</p>
-        <Link to="/" className="mt-6 inline-block bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground">Voltar à loja</Link>
+        <Button asChild size="lg" className="mt-6"><Link to="/">Voltar à loja</Link></Button>
       </main>
     );
   }
@@ -143,10 +144,10 @@ function Checkout() {
         {pix.code && (
           <>
             <p className="mt-6 break-all border bg-secondary p-3 text-left text-xs">{pix.code}</p>
-            <button type="button" onClick={() => { if (!pix.code) return; navigator.clipboard.writeText(pix.code); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-              className="mt-3 w-full bg-primary py-4 text-sm font-bold uppercase text-primary-foreground">
+            <Button type="button" size="lg" onClick={() => { if (!pix.code) return; navigator.clipboard.writeText(pix.code); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+              className="mt-3 w-full">
               {copied ? "Código copiado!" : "Copiar código Pix"}
-            </button>
+            </Button>
           </>
         )}
         <p className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Aguardando pagamento… a confirmação é automática</p>
@@ -164,102 +165,15 @@ function Checkout() {
     return (
       <main className="mx-auto max-w-lg px-4 py-20 text-center">
         <h1 className="text-3xl">Seu carrinho está vazio</h1>
-        <Link to="/" className="mt-6 inline-block bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground">Continuar comprando</Link>
+        <Button asChild size="lg" className="mt-6"><Link to="/">Continuar comprando</Link></Button>
       </main>
     );
   }
 
   return (
-    <main className="mx-auto grid max-w-6xl gap-8 px-4 py-8 md:grid-cols-[1fr_400px] md:px-8">
-      <form className="space-y-8" onSubmit={(e) => { e.preventDefault(); if (ready && !paying) pay(); }}>
-        <div className="flex items-center justify-between border-b pb-4">
-          <div className="flex items-center gap-2 text-sm font-semibold"><Lock className="h-4 w-4 text-primary" /> Checkout seguro</div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            {["Dados", "Entrega", "Pagamento"].map((st, i) => (
-              <span key={st} className="flex items-center gap-1"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">{i + 1}</span>{st}</span>
-            ))}
-          </div>
-        </div>
-
-        <section className="space-y-3">
-          <h2 className="text-xl">1. Seus dados</h2>
-          <input className={input} type="email" placeholder="E-mail" value={f.email} onChange={set("email")} required />
-          <input className={input} placeholder="Nome completo" value={f.name} onChange={set("name")} required />
-          <input className={input} type="tel" placeholder="WhatsApp / Celular" value={f.phone} onChange={(e) => setF((s) => ({ ...s, phone: maskPhone(e.target.value) }))} required />
-          <input className={input} inputMode="numeric" placeholder="CPF" value={f.cpf} onChange={(e) => setF((s) => ({ ...s, cpf: maskCpf(e.target.value) }))} required />
-          {f.cpf.replace(/\D/g, "").length === 11 && !isValidCpf(f.cpf) && <p className="text-xs text-destructive">CPF inválido. Confira os números.</p>}
-          <p className="text-xs text-muted-foreground">O CPF é exigido pelo Banco Central para emitir o Pix e a nota fiscal.</p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl">2. Entrega</h2>
-          <div className="relative">
-            <input className={input} inputMode="numeric" placeholder="CEP" value={f.cep} onChange={(e) => setF((s) => ({ ...s, cep: maskCep(e.target.value) }))} required />
-            {cepState === "loading" && <Loader2 className="absolute right-3 top-3.5 h-4 w-4 animate-spin text-muted-foreground" />}
-          </div>
-          {cepState === "error" && <p className="text-xs text-destructive">CEP não encontrado. Confira os números.</p>}
-          {cepState === "ok" && (
-            <>
-              <input className={input} placeholder="Rua" value={f.street} onChange={set("street")} required />
-              <div className="grid grid-cols-2 gap-3">
-                <input className={input} placeholder="Número" value={f.number} onChange={set("number")} required />
-                <input className={input} placeholder="Complemento" value={f.comp} onChange={set("comp")} />
-              </div>
-              <input className={input} placeholder="Bairro" value={f.district} onChange={set("district")} />
-              <p className="text-xs text-muted-foreground">{f.city} – {f.state}</p>
-            </>
-          )}
-        </section>
-
-        {options.length > 0 && (
-          <section className="space-y-3">
-            <h2 className="text-xl">3. Frete</h2>
-            {options.map((o) => (
-              <label key={o.id} className={cn("flex cursor-pointer items-center gap-3 border p-4 text-sm", ship === o.id ? "border-primary bg-secondary" : "border-border")}>
-                <input type="radio" name="ship" checked={ship === o.id} onChange={() => setShip(o.id)} className="accent-primary" />
-                <Truck className="h-4 w-4" />
-                <span className="flex-1"><b>{o.label}</b><span className="block text-xs text-muted-foreground">{o.days}</span></span>
-                <b className={o.price === 0 ? "text-primary" : ""}>{o.price === 0 ? "GRÁTIS" : formatBRL(o.price)}</b>
-              </label>
-            ))}
-          </section>
-        )}
-
-        <button type="submit" disabled={!ready || paying} className="w-full bg-primary py-4 text-sm font-bold uppercase tracking-wide text-primary-foreground disabled:opacity-50">
-          {paying ? "Gerando Pix…" : <>Pagar com Pix · {formatBRL(total)}</>}
-        </button>
-        {err && <p className="text-center text-sm text-destructive">{err}</p>}
-        <p className="flex items-center justify-center gap-2 text-xs text-muted-foreground"><ShieldCheck className="h-4 w-4" /> Ambiente criptografado · seus dados não são compartilhados</p>
-      </form>
-
-      <aside className="h-fit space-y-4 border bg-card p-5 md:sticky md:top-6">
-        <h2 className="text-xl">Resumo do pedido</h2>
-        {lines.map((l) => (
-          <div key={l.variantId} className="flex gap-3 text-xs">
-            <div className="relative">
-              <img src={img(l.variant.img ?? l.product.images[0]?.src, 160)} alt={l.product.title} className="h-16 w-16 object-cover" />
-              <span className="absolute -right-2 -top-2 rounded-full bg-primary px-1.5 text-[10px] text-primary-foreground">{l.qty}</span>
-            </div>
-            <div className="flex-1">
-              <p className="font-medium">{l.product.title}</p>
-              {l.variant.t !== "Default Title" && <p className="text-muted-foreground">{l.variant.t}</p>}
-            </div>
-            <b>{formatBRL(l.unit * l.qty)}</b>
-          </div>
-        ))}
-        <div className="space-y-1 border-t pt-4 text-sm">
-          {savings > 0 && <div className="flex justify-between font-semibold text-primary"><span>Você economiza</span><span>-{formatBRL(savings)}</span></div>}
-          <div className="flex justify-between"><span>Subtotal</span><span>{formatBRL(subtotal)}</span></div>
-          <div className="flex justify-between"><span>Frete</span><span>{options.length ? (shipping ? formatBRL(shipping) : "Grátis") : "Informe o CEP"}</span></div>
-          <div className="flex justify-between border-t pt-2 text-lg font-bold"><span>Total</span><span className="text-primary">{formatBRL(total)}</span></div>
-        </div>
-        <ul className="space-y-3 border-t pt-4 text-xs">
-          <li className="flex gap-3"><ShieldCheck className="h-5 w-5 shrink-0 text-primary" /><span><b>Compra garantida</b><br />Receba seu pedido ou seu dinheiro de volta.</span></li>
-          <li className="flex gap-3"><RotateCcw className="h-5 w-5 shrink-0 text-primary" /><span><b>7 dias para trocar</b><br />Devolução simples, conforme o Código do Consumidor.</span></li>
-          <li className="flex gap-3"><Truck className="h-5 w-5 shrink-0 text-primary" /><span><b>Envio com rastreio</b><br />Código enviado para o seu e-mail.</span></li>
-          <li className="flex gap-3"><Lock className="h-5 w-5 shrink-0 text-primary" /><span><b>Pagamento seguro</b><br />Pix processado pela InvictusPay.</span></li>
-        </ul>
-      </aside>
+    <main className="mx-auto grid max-w-6xl gap-8 px-4 py-6 md:grid-cols-[minmax(0,1fr)_360px] md:gap-12 md:px-8 md:py-10">
+      <CheckoutDetails values={f} setValues={setF} cepState={cepState} options={options} ship={ship} setShip={setShip} total={total} ready={ready} paying={paying} error={err} onPay={pay} />
+      <CheckoutSummary savings={savings} shipping={shipping} total={total} hasShipping={options.length > 0} />
     </main>
   );
 }
