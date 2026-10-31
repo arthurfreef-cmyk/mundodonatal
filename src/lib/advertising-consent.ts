@@ -43,8 +43,9 @@ export function traceRegion(trace: string, hostname: string): string | null {
     const separator = line.indexOf("=");
     return [line.slice(0, separator), line.slice(separator + 1)];
   }));
-  if (lines.h !== hostname || !/^[A-Z]{2}$/.test(lines.loc ?? "") || lines.loc === "XX" || lines.loc === "T1") return null;
-  return lines.loc;
+  const region = lines["loc"];
+  if (lines["h"] !== hostname || !region || !/^[A-Z]{2}$/.test(region) || region === "XX" || region === "T1") return null;
+  return region;
 }
 
 let regionLookup: Promise<string | null> | undefined;
