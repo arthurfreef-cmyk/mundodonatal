@@ -52,7 +52,6 @@ export function Header() {
       <div className="bg-primary text-primary-foreground">
         <div className="mx-auto flex max-w-7xl justify-center gap-8 px-4 py-2 text-[11px] md:gap-16">
           <span>Frete grátis — consulte condições</span>
-          <span className="hidden md:inline">Parcele em até 3x sem juros; demais parcelas com juros</span>
           <a className="hidden underline md:inline" href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer">Atendimento especializado</a>
         </div>
       </div>
