@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Countdown } from "@/components/store/Countdown";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { ProductSection } from "@/components/store/ProductCard";
 import { ASSET, collectionProducts } from "@/lib/catalog";
 import { BLACK_FRIDAY } from "@/lib/promo";
@@ -18,44 +19,28 @@ const cats = [
 function Index() {
   return (
     <main>
-      <section className="relative h-[520px] overflow-hidden">
-        <video autoPlay muted loop playsInline poster={ASSET("hero-video-poster-mobile.webp")} className="absolute inset-0 h-full w-full object-cover" src="https://mundodonatal.com/cdn/shop/videos/c/vp/7dae404430564ab8b9ec66556a69b1c0/7dae404430564ab8b9ec66556a69b1c0.HD-720p-2.1Mbps-94990453.mp4?v=0" />
+      <section className="relative h-[280px] overflow-hidden md:h-[310px]">
+        <img src={ASSET("hero-video-poster-mobile.webp")} alt="Árvore de Natal decorada do Mundo do Natal" fetchPriority="high" className="absolute inset-0 h-full w-full object-cover object-[center_60%]" />
         <div className="hero-overlay absolute inset-0" />
         <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-center px-6 text-primary-foreground md:px-8">
-          <p className="eyebrow">Coleção Natal 2026</p>
-          <h1 className="mt-4 max-w-md text-6xl leading-none md:text-7xl">Antecipe o encanto do Natal</h1>
-          <p className="mt-6 max-w-sm text-sm">Árvores realistas e decorações escolhidas para transformar a sua casa em um cenário inesquecível.</p>
-          <div className="mt-6 flex gap-4">
-            <Link to="/collections/$handle" params={{ handle: "arvores-de-natal" }} className="bg-accent px-5 py-3 text-xs font-semibold text-accent-foreground">Descobrir nossas árvores</Link>
-            <Link to="/collections/$handle" params={{ handle: "all" }} className="border-t px-5 py-3 text-xs font-semibold">Ver toda a coleção</Link>
-          </div>
+          <p className="text-xs font-medium">Coleção Natal 2026</p>
+          <h1 className="mt-3 max-w-md text-4xl leading-tight md:text-5xl">Mundo do Natal</h1>
+          <p className="mt-3 max-w-sm text-sm">Árvores realistas e decorações escolhidas para transformar a sua casa em um cenário inesquecível.</p>
+          <Button asChild size="lg" variant="secondary" className="mt-5 w-fit"><Link to="/collections/$handle" params={{ handle: "arvores-de-natal" }}>Ver árvores de Natal <ArrowRight /></Link></Button>
         </div>
       </section>
-      {BLACK_FRIDAY.active && (
-        <Link to="/black-friday" className="promo-shine block px-4 py-8 text-center text-promo-foreground">
-          <p className="font-heading text-4xl">Black Friday — {BLACK_FRIDAY.percent}% OFF em todo o site</p>
-          <p className="eyebrow mt-2">Ver ofertas →</p>
-        </Link>
-      )}
-      <section className="bg-secondary px-4 py-8 text-secondary-foreground">
-        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 md:flex-row">
-          <h2 className="text-2xl">O Natal está cada dia mais perto</h2>
-          <Countdown target="2026-12-25T00:00:00-03:00" />
-        </div>
-      </section>
-      <section className="bg-cream px-4 py-16">
-        <h2 className="text-center text-4xl">Prepare a casa antes da correria de dezembro</h2>
-        <div className="mx-auto mt-10 grid max-w-6xl gap-6 md:grid-cols-3">
+      <ProductSection title="Árvores de Natal mais Desejadas" to="/collections/arvores-de-natal" items={collectionProducts("arvores-de-natal").slice(0, 12)} />
+      <section className="border-y bg-muted px-4 py-8 md:py-10">
+        <h2 className="text-center text-3xl">Decore cada detalhe</h2>
+        <div className="mx-auto mt-6 grid max-w-6xl grid-cols-3 gap-3 md:gap-6">
           {cats.map((c) => (
             <Link key={c.t} to={c.to} className="bg-card text-center">
               <img src={ASSET(c.img)} alt={c.t} className="aspect-[4/3] w-full object-cover" loading="lazy" />
-              <p className="eyebrow mt-4 text-accent">{c.k}</p>
-              <h3 className="pb-6 text-2xl">{c.t}</h3>
+              <h3 className="px-2 py-3 font-sans text-xs font-medium md:text-base">{c.t}</h3>
             </Link>
           ))}
         </div>
       </section>
-      <ProductSection title="Árvores de Natal mais Desejadas" to="/collections/arvores-de-natal" items={collectionProducts("arvores-de-natal").slice(0, 12)} />
       <ProductSection title="Enfeites Natalinos" to="/collections/enfeites" items={collectionProducts("enfeites").slice(0, 6)} />
       <ProductSection title="Saias de Árvores" to="/collections/saias-de-arvores" items={collectionProducts("saias-de-arvores").slice(0, 6)} />
       <ProductSection title="Guirlandas em destaque" to="/collections/guirlandas-natalinas" items={collectionProducts("guirlandas-natalinas").slice(0, 6)} />
