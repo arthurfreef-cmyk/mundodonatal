@@ -9,7 +9,8 @@ import { cn } from "@/lib/utils";
 import { isValidCpf, maskCpf, maskPhone } from "@/lib/br";
 import { useServerFn } from "@tanstack/react-start";
 import { createPixPayment, getPaymentStatus } from "@/lib/payments.functions";
-import { trackMetaEvent } from "@/lib/meta-pixel";
+import { syncMetaPermission, trackMetaEvent } from "@/lib/meta-pixel";
+import { resolveAdvertisingRegion } from "@/lib/advertising-consent";
 import { cartEventParameters, type MetaCartItem } from "@/lib/meta-commerce";
 
 export const Route = createFileRoute("/checkout")({
@@ -40,7 +41,10 @@ function Checkout() {
   useEffect(() => {
     if (!lines.length || checkoutStarted.current) return;
     checkoutStarted.current = true;
-    trackMetaEvent("InitiateCheckout", cartEventParameters(lines));
+    void resolveAdvertisingRegion().then((region) => {
+      syncMetaPermission(region);
+      trackMetaEvent("InitiateCheckout", cartEventParameters(lines));
+    });
   }, [lines]);
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement>) => setF((s) => ({ ...s, [k]: e.target.value }));
 
