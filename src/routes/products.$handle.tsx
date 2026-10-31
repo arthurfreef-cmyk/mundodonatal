@@ -32,6 +32,10 @@ export const Route = createFileRoute("/products/$handle")({
 
 function ProductPage() {
   const { product } = Route.useLoaderData();
+  return <ProductDetails key={product.handle} product={product} />;
+}
+
+function ProductDetails({ product }: { product: NonNullable<ReturnType<typeof getProduct>> }) {
   const { add } = useCart();
   const [vi, setVi] = useState(0);
   const [im, setIm] = useState(0);
@@ -41,18 +45,18 @@ function ProductPage() {
   return (
     <main className="mx-auto grid max-w-6xl gap-10 px-4 py-10 md:grid-cols-2">
       <div>
-        <img src={img(product.images[im]?.src, 1000)} alt={product.title} className="aspect-square w-full bg-muted object-cover" />
+        <img src={img(product.images[im]?.src, 1000)} alt={product.title} fetchPriority="high" width={1000} height={1000} className="aspect-square w-full bg-muted object-cover" />
         <div className="mt-3 flex gap-2 overflow-x-auto">
           {product.images.map((i, n) => (
             <Button variant="outline" key={i.src} onClick={() => setIm(n)} aria-label={`Foto ${n + 1}`} aria-pressed={im === n} className={cn("h-16 w-16 shrink-0 overflow-hidden p-0", im === n && "border-primary ring-1 ring-primary")}>
-              <img src={img(i.src, 150)} alt="" className="h-16 w-16 object-cover" />
+              <img src={img(i.src, 150)} alt="" loading="lazy" decoding="async" className="h-16 w-16 object-cover" />
             </Button>
           ))}
         </div>
       </div>
       <div>
         <h1 className="text-3xl md:text-4xl">{product.title}</h1>
-        <div className="mt-4 flex items-baseline gap-3">
+        <div className="mt-4 flex flex-wrap items-baseline gap-3">
           <span className="text-2xl font-bold text-primary">{formatBRL(pp.price)}</span>
           {pp.compareAt && <s className="text-muted-foreground">{formatBRL(pp.compareAt)}</s>}
           {discountPercent(pp) > 0 && <span className="bg-promo px-2 py-1 text-xs font-bold text-promo-foreground">-{discountPercent(pp)}%</span>}

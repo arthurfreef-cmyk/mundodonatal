@@ -1,4 +1,5 @@
-import { ArrowRight, Minus, Plus, Trash2, X } from "lucide-react";
+import { ArrowRight, Minus, Plus, Trash2 } from "lucide-react";
+import { StoreDrawer } from "./StoreDrawer";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { img } from "@/lib/catalog";
@@ -7,20 +8,14 @@ import { formatBRL } from "@/lib/promo";
 
 export function CartDrawer() {
   const { open, setOpen, lines, subtotal, setQty, remove } = useCart();
-  if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 bg-ink/50" onClick={() => setOpen(false)}>
-      <aside role="dialog" aria-label="Carrinho" className="ml-auto flex h-full w-full max-w-md flex-col bg-background" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between border-b p-5">
-          <h2 className="text-2xl">Seu carrinho</h2>
-          <Button variant="ghost" size="icon" aria-label="Fechar carrinho" onClick={() => setOpen(false)}><X className="h-5 w-5" /></Button>
-        </div>
-        <div className="flex-1 space-y-4 overflow-y-auto p-5">
+    <StoreDrawer open={open} onOpenChange={setOpen} title="Carrinho">
+        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-5">
           {lines.length === 0 && <p className="text-sm text-muted-foreground">Seu carrinho está vazio.</p>}
           {lines.map((l) => (
             <div key={l.variantId} className="flex gap-3">
               <img src={img(l.variant.img ?? l.product.images[0]?.src, 200)} alt="" className="h-20 w-20 object-cover" />
-              <div className="flex-1 text-xs">
+              <div className="min-w-0 flex-1 text-xs">
                 <p className="font-medium">{l.product.title}</p>
                 {l.variant.t !== "Default Title" && <p className="text-muted-foreground">{l.variant.t}</p>}
                 <div className="mt-2 flex items-center gap-2">
@@ -30,7 +25,7 @@ export function CartDrawer() {
                   <Button variant="ghost" size="icon" aria-label="Remover" onClick={() => remove(l.variantId)} className="ml-auto h-8 w-8 text-muted-foreground"><Trash2 className="h-4 w-4" /></Button>
                 </div>
               </div>
-              <p className="text-xs font-bold text-primary">{formatBRL(l.unit * l.qty)}</p>
+              <p className="shrink-0 text-xs font-bold text-primary">{formatBRL(l.unit * l.qty)}</p>
             </div>
           ))}
         </div>
@@ -41,7 +36,6 @@ export function CartDrawer() {
             <p className="mt-2 text-center text-[11px] text-muted-foreground">Frete grátis disponível para todo o Brasil</p>
           </div>
         )}
-      </aside>
-    </div>
+    </StoreDrawer>
   );
 }

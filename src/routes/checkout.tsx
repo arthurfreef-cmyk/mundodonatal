@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { BadgeCheck, Check, Clock, Loader2, QrCode, ShieldCheck, Smartphone } from "lucide-react";
+import { BadgeCheck, Check, Loader2, QrCode, ShieldCheck, Smartphone } from "lucide-react";
 import { variantPrice } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/lib/promo";
@@ -61,7 +61,7 @@ function Checkout() {
       .then((a) => {
         if (!alive) return;
         if (!a) return setCepState("error");
-        setF((s) => ({ ...s, street: a.street || s.street, district: a.district || s.district, city: a.city, state: a.state }));
+        setF((s) => ({ ...s, street: a.street, district: a.district, city: a.city, state: a.state, number: "", comp: "" }));
         setCepState("ok");
       })
       .catch(() => alive && setCepState("error"));
@@ -71,7 +71,7 @@ function Checkout() {
   const options = useMemo(() => (cepState === "ok" ? shippingOptions(f.cep) : []), [cepState, f.cep]);
   const shipping = options.find((o) => o.id === ship)?.price ?? 0;
   const total = subtotal + shipping;
-  const ready = f.email.includes("@") && f.name.trim().length > 2 && f.phone.replace(/\D/g, "").length >= 10 && isValidCpf(f.cpf) && cepState === "ok" && f.street && f.number;
+  const ready = /^\S+@\S+\.\S+$/.test(f.email.trim()) && f.name.trim().length > 2 && f.phone.replace(/\D/g, "").length >= 10 && isValidCpf(f.cpf) && cepState === "ok" && Boolean(f.street.trim() && f.number.trim());
 
   const createPix = useServerFn(createPixPayment);
   const checkStatus = useServerFn(getPaymentStatus);
@@ -79,13 +79,6 @@ function Checkout() {
   const [paying, setPaying] = useState(false);
   const [err, setErr] = useState("");
   const [copied, setCopied] = useState(false);
-  const [left, setLeft] = useState(1800);
-  useEffect(() => {
-    if (!pix) return;
-    setLeft(1800);
-    const t = setInterval(() => setLeft((x) => Math.max(0, x - 1)), 1000);
-    return () => clearInterval(t);
-  }, [pix]);
   const savings = lines.reduce((s, l) => s + l.qty * Math.max(0, (variantPrice(l.variant).compareAt ?? l.unit) - l.unit), 0);
 
   // Confere a cada 5s se o Pix foi pago.
@@ -105,6 +98,7 @@ function Checkout() {
   }, [pix, done, checkStatus, clear]);
 
   async function pay() {
+    if (!ready || paying || !lines.length) return;
     setErr(""); setPaying(true);
     try {
       const r = await createPix({ data: {
@@ -126,7 +120,7 @@ function Checkout() {
       <main className="mx-auto max-w-lg px-4 py-20 text-center">
         <Check className="mx-auto h-12 w-12 text-primary" />
         <h1 className="mt-4 text-3xl">Pagamento confirmado!</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Obrigado pela compra. Você receberá as informações do pedido no seu e-mail.</p>
+        <p className="mt-2 text-sm text-muted-foreground">Obrigado pela compra. Seu pagamento foi confirmado.</p>
         <Button asChild size="lg" className="mt-6"><Link to="/">Voltar à loja</Link></Button>
       </main>
     );
@@ -139,17 +133,23 @@ function Checkout() {
       <main className="mx-auto max-w-md px-4 py-12 text-center">
         <h1 className="text-3xl">Pague com Pix</h1>
         <p className="mt-2 text-sm text-muted-foreground">Total: <b className="text-primary">{formatBRL(pix.amount / 100)}</b></p>
-        <p className="mt-3 inline-flex items-center gap-2 bg-secondary px-3 py-1.5 text-sm font-semibold"><Clock className="h-4 w-4 text-primary" /> Expira em {String(Math.floor(left / 60)).padStart(2, "0")}:{String(left % 60).padStart(2, "0")}</p>
         {qr && <img src={qr} alt="QR Code Pix" className="mx-auto mt-6 h-64 w-64 border bg-background p-2" />}
         {pix.code && (
           <>
-            <p className="mt-6 break-all border bg-secondary p-3 text-left text-xs">{pix.code}</p>
-            <Button type="button" size="lg" onClick={() => { if (!pix.code) return; navigator.clipboard.writeText(pix.code); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+            <p className="mt-6 break-all border bg-muted p-3 text-left text-xs">{pix.code}</p>
+            <Button type="button" size="lg" onClick={async () => {
+              if (!pix.code) return;
+              try {
+                await navigator.clipboard.writeText(pix.code);
+                setErr(""); setCopied(true); setTimeout(() => setCopied(false), 2000);
+              } catch { setErr("Não foi possível copiar automaticamente. Selecione e copie o código acima."); }
+            }}
               className="mt-3 w-full">
               {copied ? "Código copiado!" : "Copiar código Pix"}
             </Button>
           </>
         )}
+        {err && <p role="alert" className="mt-3 text-sm text-destructive">{err}</p>}
         <p className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Aguardando pagamento… a confirmação é automática</p>
         <ol className="mt-6 space-y-2 border p-4 text-left text-sm">
           <li className="flex gap-2"><Smartphone className="h-4 w-4 shrink-0 text-primary" /> Abra o app do seu banco e escolha Pix.</li>

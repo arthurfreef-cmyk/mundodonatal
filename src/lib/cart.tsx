@@ -34,24 +34,34 @@ const KEY = "mdn-cart-v1";
 export function CartProvider({ children }: { children: ReactNode }) {
   const [raw, setRaw] = useState<CartLine[]>([]);
   const [open, setOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   // Carrega o carrinho salvo somente após hidratar (evita divergência SSR).
   useEffect(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem(KEY) ?? "[]") as CartLine[];
-      if (Array.isArray(saved)) setRaw(saved);
+      const saved: unknown = JSON.parse(localStorage.getItem(KEY) ?? "[]");
+      if (Array.isArray(saved)) setRaw(saved.filter((line): line is CartLine => {
+        if (!line || typeof line !== "object") return false;
+        const entry = line as Partial<CartLine>;
+        return typeof entry.handle === "string" && typeof entry.variantId === "number" &&
+          typeof entry.qty === "number" && Number.isSafeInteger(entry.qty) && entry.qty > 0 &&
+          Boolean(getProduct(entry.handle)?.variants.some((v) => v.id === entry.variantId && v.a));
+      }));
     } catch {
       /* carrinho corrompido: ignora */
     }
+    setHydrated(true);
   }, []);
   useEffect(() => {
-    localStorage.setItem(KEY, JSON.stringify(raw));
-  }, [raw]);
+    if (!hydrated) return;
+    try { localStorage.setItem(KEY, JSON.stringify(raw)); } catch { /* Storage can be unavailable; the current cart still works. */ }
+  }, [raw, hydrated]);
 
   const add = useCallback((handle: string, variantId: number, qty = 1) => {
     const product = getProduct(handle);
     const variant = product?.variants.find((item) => item.id === variantId);
-    if (product && variant) trackMetaEvent("AddToCart", productEventParameters(product, variant, qty));
+    if (!product || !variant?.a || !Number.isSafeInteger(qty) || qty <= 0) return;
+    trackMetaEvent("AddToCart", productEventParameters(product, variant, qty));
     setRaw((r) => {
       const ex = r.find((l) => l.variantId === variantId);
       if (ex) return r.map((l) => (l.variantId === variantId ? { ...l, qty: l.qty + qty } : l));
@@ -60,6 +70,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setOpen(true);
   }, []);
   const setQty = useCallback((variantId: number, qty: number) => {
+    if (!Number.isSafeInteger(qty)) return;
     setRaw((r) => (qty <= 0 ? r.filter((l) => l.variantId !== variantId) : r.map((l) => (l.variantId === variantId ? { ...l, qty } : l))));
   }, []);
   const clear = useCallback(() => setRaw([]), []);
