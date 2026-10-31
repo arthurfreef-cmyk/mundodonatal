@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getProduct, img, variantPrice } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
-import { BLACK_FRIDAY, discountPercent, formatBRL, installment } from "@/lib/promo";
+import { BLACK_FRIDAY, discountPercent, formatBRL } from "@/lib/promo";
 
 export const Route = createFileRoute("/products/$handle")({
   loader: ({ params }) => {
@@ -57,7 +57,6 @@ function ProductPage() {
           {pp.compareAt && <s className="text-muted-foreground">{formatBRL(pp.compareAt)}</s>}
           {discountPercent(pp) > 0 && <span className="bg-promo px-2 py-1 text-xs font-bold text-promo-foreground">-{discountPercent(pp)}%</span>}
         </div>
-        <p className="mt-1 text-xs text-muted-foreground">ou 3x de {formatBRL(installment(pp.price))} sem juros</p>
         {product.variants.length > 1 && (
           <select value={vi} onChange={(e) => setVi(Number(e.target.value))} className="mt-6 w-full border bg-background p-3 text-sm" aria-label="Opção">
             {product.variants.map((x, n) => <option key={x.id} value={n}>{x.t}</option>)}

@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { img, isAvailable, productPrice, type Product } from "@/lib/catalog";
-import { discountPercent, formatBRL, installment } from "@/lib/promo";
+import { discountPercent, formatBRL } from "@/lib/promo";
 
 export function ProductCard({ product, eager = false, cols = 6 }: { product: Product; eager?: boolean; cols?: 4 | 6 }) {
   const [showAlternate, setShowAlternate] = useState(false);
@@ -28,9 +28,6 @@ export function ProductCard({ product, eager = false, cols = 6 }: { product: Pro
           <span className="text-sm font-bold text-primary">{formatBRL(pp.price)}</span>
           {pp.compareAt && <s className="text-[11px] text-muted-foreground">{formatBRL(pp.compareAt)}</s>}
         </div>
-        <p className="mt-1 text-[10px] text-muted-foreground">
-          ou <b className="text-foreground">3x de {formatBRL(installment(pp.price))}</b> sem juros
-        </p>
         <Button asChild variant="outline" className="mt-4 w-full justify-between px-3 text-xs"><Link to="/products/$handle" params={{ handle: product.handle }}>Ver detalhes <ArrowRight /></Link></Button>
       </div>
     </article>

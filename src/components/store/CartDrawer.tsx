@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { img } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
-import { formatBRL, installment } from "@/lib/promo";
+import { formatBRL } from "@/lib/promo";
 
 export function CartDrawer() {
   const { open, setOpen, lines, subtotal, setQty, remove } = useCart();
@@ -37,7 +37,6 @@ export function CartDrawer() {
         {lines.length > 0 && (
           <div className="border-t p-5">
             <div className="flex justify-between text-sm"><span>Subtotal</span><b>{formatBRL(subtotal)}</b></div>
-            <p className="mt-1 text-[11px] text-muted-foreground">ou 3x de {formatBRL(installment(subtotal))} sem juros</p>
             <Button asChild variant="commerce" size="lg" className="mt-4 w-full"><Link to="/checkout" onClick={() => setOpen(false)}>COMPRAR AGORA <ArrowRight /></Link></Button>
             <p className="mt-2 text-center text-[11px] text-muted-foreground">Frete grátis disponível para todo o Brasil</p>
           </div>
