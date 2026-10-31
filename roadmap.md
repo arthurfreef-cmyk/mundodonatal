@@ -1,5 +1,11 @@
 # Integração do Pixel
 
+## Revisão da loja
+- [x] Remover a barra vermelha e manter somente a preta rolante, conforme o pedido mais recente; confirmado visualmente no celular.
+- [x] Corrigir carrinho inválido/armazenamento bloqueado, menu acessível, endereço antigo ao mudar CEP, cópia Pix sem confirmação, avisos incorretos e overflow no rodapé, preservando preços e Pix.
+- [x] Verificar produto → carrinho → checkout com CEP real, busca no celular e larguras de 320 a 1334 px; 20 testes passaram, sem gerar cobrança.
+- [ ] Verificar o registro do endereço na integração de pedidos e o tratamento de status finais do Pix (depende de confirmar os campos e status aceitos pela InvictusPay; nenhuma cobrança real realizada nesta revisão).
+
 ## Barras do topo e carregamento
 - [x] Restaurar a faixa rolante do topo preservando a Black Friday e o cabeçalho.
 - [x] Otimizar a prioridade e o tamanho das imagens sem alterar catálogo ou design; fotos alternativas carregam na interação.

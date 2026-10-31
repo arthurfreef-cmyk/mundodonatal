@@ -40,7 +40,7 @@ function Index() {
               Black Friday · {BLACK_FRIDAY.percent}% OFF em todo o site <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           )}
-          <div className="mt-3 flex items-center gap-3">
+          <div className="mt-3 flex flex-wrap items-center gap-3">
             <span className="text-xs font-medium md:text-sm">Faltam para o Natal:</span>
             <Countdown target={christmasTarget} compact tone="dark" />
           </div>

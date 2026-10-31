@@ -17,3 +17,5 @@
 - Keep checkout presentation in focused store components and use a simplified checkout header so commerce and payment behavior remain separate from visual changes.
 - Keep storefront announcement strips in Header, excluding checkout; use equal repeated groups for seamless scrolling and honor reduced motion.
 - Use responsive product image sources and defer alternate product photos until pointer or keyboard interaction to reduce initial image downloads without changing the catalog.
+- Use StoreDrawer for cart and mobile navigation so focus trapping, Escape dismissal and scroll locking stay consistent.
+- Validate saved cart entries and tolerate unavailable browser storage; persist only after hydration to preserve existing carts.

@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Lock, Menu, Package, Search, ShoppingBag, X } from "lucide-react";
+import { ArrowLeft, Lock, Menu, Package, Search, ShoppingBag } from "lucide-react";
+import { StoreDrawer } from "./StoreDrawer";
 import { useState, type FormEvent } from "react";
 import { ASSET, NAV, WHATSAPP } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
@@ -43,12 +44,6 @@ export function Header() {
           </div>
         </Link>
       )}
-      <div className="bg-primary text-primary-foreground">
-        <div className="mx-auto flex max-w-7xl justify-center gap-8 px-4 py-2 text-[11px] md:gap-16">
-          <span>Frete grátis — consulte condições</span>
-          <a className="hidden underline md:inline" href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer">Atendimento especializado</a>
-        </div>
-      </div>
       <div className="border-b">
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 md:px-8">
           <Button variant="ghost" size="icon" className="md:hidden" aria-label="Abrir menu" onClick={() => setMenu(true)}>
@@ -81,8 +76,8 @@ export function Header() {
             </Button>
           </div>
         </div>
-        <nav className="hidden border-t md:block" aria-label="Principal">
-          <ul className="mx-auto flex max-w-7xl justify-center gap-7 px-4 text-[13px] font-medium">
+        <nav className="hidden overflow-x-auto border-t md:block" aria-label="Principal">
+          <ul className="mx-auto flex w-max min-w-full justify-center gap-7 px-4 text-[13px] font-medium">
             {NAV.map((n) => (
               <li key={n.to}>
                 <Link
@@ -107,20 +102,17 @@ export function Header() {
         </nav>
       </div>
 
-      {menu && (
-        <div className="fixed inset-0 z-50 bg-ink/50 md:hidden" onClick={() => setMenu(false)}>
-          <div className="h-full w-80 max-w-[85%] overflow-y-auto bg-background p-6" onClick={(e) => e.stopPropagation()}>
-            <Button variant="ghost" size="icon" aria-label="Fechar menu" onClick={() => setMenu(false)} className="mb-6"><X className="h-5 w-5" /></Button>
+      <StoreDrawer open={menu} onOpenChange={setMenu} title="Menu" side="left">
+          <div className="min-h-0 flex-1 overflow-y-auto p-6">
             <form onSubmit={(e) => { onSearch(e); setMenu(false); }} className="mb-6">
-              <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar..." className="w-full rounded-sm border bg-cream px-3 py-2 text-sm" />
+              <label className="flex items-center rounded-sm border bg-cream px-3"><input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar..." aria-label="Buscar no menu" className="min-w-0 flex-1 bg-transparent py-2 text-sm" /><Button type="submit" variant="ghost" size="icon" aria-label="Pesquisar no menu"><Search /></Button></label>
             </form>
             <ul className="space-y-4 text-sm">
               {BLACK_FRIDAY.active && <li><Link to="/black-friday" onClick={() => setMenu(false)} className="font-bold text-primary">Black Friday — {BLACK_FRIDAY.percent}% OFF</Link></li>}
               {NAV.map((n) => <li key={n.to}><Link to={n.to} onClick={() => setMenu(false)}>{n.label}</Link></li>)}
             </ul>
           </div>
-        </div>
-      )}
+      </StoreDrawer>
     </header>
   );
 }

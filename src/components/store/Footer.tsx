@@ -3,6 +3,7 @@ import { Award, Heart, ShieldCheck, Sparkles, Truck } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { WHATSAPP } from "@/lib/catalog";
+import { Button } from "@/components/ui/button";
 
 const perks = [
   { icon: Sparkles, t: "Curadoria especializada", d: "Tudo para um Natal inesquecível" },
@@ -23,8 +24,7 @@ export function Footer() {
       toast.error("Digite um e-mail válido.");
       return;
     }
-    toast.success("Pronto! Você vai receber nossas novidades.");
-    setEmail("");
+    toast.info("O cadastro de novidades ainda não está disponível. Fale com nosso atendimento.");
   };
   if (pathname === "/checkout") return (
     <footer className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-t px-4 py-6 text-xs text-muted-foreground md:px-8">
@@ -49,9 +49,9 @@ export function Footer() {
             <h2 className="mt-3 text-4xl md:text-5xl">Receba inspiração<br />e ofertas especiais</h2>
             <p className="mt-3 text-xs opacity-80">Novidades, guias de decoração e condições exclusivas direto no seu e-mail.</p>
           </div>
-          <form onSubmit={submit} className="flex w-full max-w-md rounded-full bg-background p-1">
-            <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Seu melhor e-mail" aria-label="E-mail" className="flex-1 bg-transparent px-4 text-sm text-foreground outline-none" />
-            <button className="rounded-full bg-primary px-5 py-2 text-xs font-semibold">Quero receber novidades →</button>
+          <form onSubmit={submit} className="flex w-full max-w-md flex-col gap-2 sm:flex-row">
+            <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required placeholder="Seu melhor e-mail" aria-label="E-mail" className="h-11 min-w-0 flex-1 rounded-md bg-background px-4 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring" />
+            <Button type="submit" className="shrink-0 text-xs">Quero receber novidades →</Button>
           </form>
         </div>
       </section>
@@ -67,14 +67,14 @@ export function Footer() {
           <div>
             <p className="eyebrow text-accent">Fale conosco</p>
             <p className="mt-4 text-xs font-semibold">E-mail</p>
-            <p className="text-xs opacity-70">atendimento@mundodonatal.com</p>
+            <p className="break-words text-xs opacity-70">atendimento@mundodonatal.com</p>
             <p className="mt-3 text-xs font-semibold">Horário de atendimento</p>
             <p className="text-xs opacity-70">Segunda a sexta, das 9h às 18h</p>
             <a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer" className="mt-3 inline-block text-xs text-accent">WhatsApp</a>
           </div>
         </div>
         <div className="mx-auto max-w-6xl border-t border-ink-foreground/10 px-6 py-6 text-[10px] opacity-60">
-          <p className="flex items-center gap-2"><Award className="h-3 w-3" /> Formas de pagamento: Visa · Mastercard · Amex · Elo · Boleto · Pix</p>
+          <p className="flex items-center gap-2"><Award className="h-3 w-3" /> Pagamento via Pix</p>
           <p className="mt-3">© 2026 Mundo do Natal. Todos os direitos reservados.</p>
         </div>
       </div>
