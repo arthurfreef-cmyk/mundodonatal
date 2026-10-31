@@ -1,4 +1,5 @@
-import { Minus, Plus, Trash2, X } from "lucide-react";
+import { ArrowRight, Minus, Plus, Trash2, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { img } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
@@ -12,7 +13,7 @@ export function CartDrawer() {
       <aside role="dialog" aria-label="Carrinho" className="ml-auto flex h-full w-full max-w-md flex-col bg-background" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between border-b p-5">
           <h2 className="text-2xl">Seu carrinho</h2>
-          <button aria-label="Fechar carrinho" onClick={() => setOpen(false)}><X className="h-5 w-5" /></button>
+          <Button variant="ghost" size="icon" aria-label="Fechar carrinho" onClick={() => setOpen(false)}><X className="h-5 w-5" /></Button>
         </div>
         <div className="flex-1 space-y-4 overflow-y-auto p-5">
           {lines.length === 0 && <p className="text-sm text-muted-foreground">Seu carrinho está vazio.</p>}
@@ -23,10 +24,10 @@ export function CartDrawer() {
                 <p className="font-medium">{l.product.title}</p>
                 {l.variant.t !== "Default Title" && <p className="text-muted-foreground">{l.variant.t}</p>}
                 <div className="mt-2 flex items-center gap-2">
-                  <button aria-label="Diminuir" onClick={() => setQty(l.variantId, l.qty - 1)} className="border p-1"><Minus className="h-3 w-3" /></button>
+                  <Button variant="outline" size="icon" aria-label="Diminuir" onClick={() => setQty(l.variantId, l.qty - 1)} className="h-8 w-8"><Minus className="h-3 w-3" /></Button>
                   <span>{l.qty}</span>
-                  <button aria-label="Aumentar" onClick={() => setQty(l.variantId, l.qty + 1)} className="border p-1"><Plus className="h-3 w-3" /></button>
-                  <button aria-label="Remover" onClick={() => remove(l.variantId)} className="ml-auto text-muted-foreground"><Trash2 className="h-4 w-4" /></button>
+                  <Button variant="outline" size="icon" aria-label="Aumentar" onClick={() => setQty(l.variantId, l.qty + 1)} className="h-8 w-8"><Plus className="h-3 w-3" /></Button>
+                  <Button variant="ghost" size="icon" aria-label="Remover" onClick={() => remove(l.variantId)} className="ml-auto h-8 w-8 text-muted-foreground"><Trash2 className="h-4 w-4" /></Button>
                 </div>
               </div>
               <p className="text-xs font-bold text-primary">{formatBRL(l.unit * l.qty)}</p>
@@ -37,9 +38,7 @@ export function CartDrawer() {
           <div className="border-t p-5">
             <div className="flex justify-between text-sm"><span>Subtotal</span><b>{formatBRL(subtotal)}</b></div>
             <p className="mt-1 text-[11px] text-muted-foreground">ou 3x de {formatBRL(installment(subtotal))} sem juros</p>
-            <Link to="/checkout" onClick={() => setOpen(false)} className="mt-4 block bg-primary py-3 text-center text-sm font-semibold text-primary-foreground">
-              Finalizar compra
-            </Link>
+            <Button asChild variant="commerce" size="lg" className="mt-4 w-full"><Link to="/checkout" onClick={() => setOpen(false)}>COMPRAR AGORA <ArrowRight /></Link></Button>
             <p className="mt-2 text-center text-[11px] text-muted-foreground">Frete grátis disponível para todo o Brasil</p>
           </div>
         )}

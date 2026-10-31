@@ -1,5 +1,8 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useState } from "react";
+import { ShoppingBag } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { getProduct, img, variantPrice } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
 import { BLACK_FRIDAY, discountPercent, formatBRL, installment } from "@/lib/promo";
@@ -41,9 +44,9 @@ function ProductPage() {
         <img src={img(product.images[im]?.src, 1000)} alt={product.title} className="aspect-square w-full bg-muted object-cover" />
         <div className="mt-3 flex gap-2 overflow-x-auto">
           {product.images.map((i, n) => (
-            <button key={i.src} onClick={() => setIm(n)} aria-label={`Foto ${n + 1}`}>
+            <Button variant="outline" key={i.src} onClick={() => setIm(n)} aria-label={`Foto ${n + 1}`} aria-pressed={im === n} className={cn("h-16 w-16 shrink-0 overflow-hidden p-0", im === n && "border-primary ring-1 ring-primary")}>
               <img src={img(i.src, 150)} alt="" className="h-16 w-16 object-cover" />
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -60,9 +63,10 @@ function ProductPage() {
             {product.variants.map((x, n) => <option key={x.id} value={n}>{x.t}</option>)}
           </select>
         )}
-        <button disabled={!v.a} onClick={() => add(product.handle, v.id)} className="mt-6 w-full bg-primary py-4 text-sm font-semibold text-primary-foreground disabled:opacity-50">
+        <Button variant="commerce" size="lg" disabled={!v.a} onClick={() => add(product.handle, v.id)} className="mt-6 h-14 w-full">
+          <ShoppingBag />
           {v.a ? "Adicionar ao carrinho" : "Esgotado"}
-        </button>
+        </Button>
       </div>
     </main>
   );
