@@ -61,6 +61,7 @@ function ProductDetails({ product }: { product: NonNullable<ReturnType<typeof ge
           {pp.compareAt && <s className="text-muted-foreground">{formatBRL(pp.compareAt)}</s>}
           {discountPercent(pp) > 0 && <span className="bg-promo px-2 py-1 text-xs font-bold text-promo-foreground">-{discountPercent(pp)}%</span>}
         </div>
+        <p className="mt-3 inline-flex w-fit items-center rounded-sm bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700">Frete grátis para todo o Brasil</p>
         {product.variants.length > 1 && (
           <select value={vi} onChange={(e) => setVi(Number(e.target.value))} className="mt-6 w-full border bg-background p-3 text-sm" aria-label="Opção">
             {product.variants.map((x, n) => <option key={x.id} value={n}>{x.t}</option>)}
