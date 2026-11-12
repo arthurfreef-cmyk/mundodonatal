@@ -82,6 +82,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "preconnect", href: "https://mundodonatal.com" },
       { rel: "preconnect", href: "https://cdn.shopify.com" },
+      { rel: "preconnect", href: "https://connect.facebook.net" },
+      { rel: "preconnect", href: "https://cdn.utmify.com.br" },
+      { rel: "dns-prefetch", href: "https://www.facebook.com" },
       { rel: "preconnect", href: "https://mundodonatal.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
@@ -104,6 +107,15 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         {children}
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            src="https://www.facebook.com/tr?id=1108400925358092&ev=PageView&noscript=1"
+            alt=""
+          />
+        </noscript>
         <Scripts />
       </body>
     </html>
@@ -118,25 +130,25 @@ function RootComponent() {
     const utmifyWindow = window as typeof window & { pixelId?: string };
     utmifyWindow.pixelId = "6af63b44e978312a61bf3fe1";
 
-    if (!document.querySelector('script[data-utmify-pixel="true"]')) {
+    if (!document.getElementById("utmify-pixel-script")) {
       const utmifyScript = document.createElement("script");
+      utmifyScript.id = "utmify-pixel-script";
       utmifyScript.src = "https://cdn.utmify.com.br/scripts/pixel/pixel.js";
       utmifyScript.async = true;
-      utmifyScript.defer = true;
-      utmifyScript.setAttribute("data-utmify-pixel", "true");
       (document.head || document.documentElement).appendChild(utmifyScript);
     }
   }, []);
 
   useEffect(() => {
     const pixelWindow = window as typeof window & {
-      fbq?: (...args: unknown[]) => void;
-      _fbq?: (...args: unknown[]) => void;
+      fbq?: ((...args: unknown[]) => void) & { queue?: unknown[][]; push?: (...args: unknown[]) => void; loaded?: boolean; version?: string };
+      _fbq?: typeof pixelWindow.fbq;
+      __mundoMetaPixelInitialized?: boolean;
     };
 
     if (!pixelWindow.fbq) {
       const fbq = function (...args: unknown[]) {
-        const callable = fbq as typeof fbq & { callMethod?: (...values: unknown[]) => void; queue: unknown[][]; loaded?: boolean; version?: string };
+        const callable = fbq as typeof fbq & { callMethod?: (...values: unknown[]) => void; queue: unknown[][] };
         if (callable.callMethod) callable.callMethod(...args);
         else callable.queue.push(args);
       } as typeof pixelWindow.fbq & { queue: unknown[][]; push: (...args: unknown[]) => void; loaded: boolean; version: string };
@@ -148,17 +160,21 @@ function RootComponent() {
       pixelWindow.fbq = fbq;
       pixelWindow._fbq = fbq;
 
-      const script = document.createElement("script");
-      script.async = true;
-      script.src = "https://connect.facebook.net/en_US/fbevents.js";
-      const firstScript = document.getElementsByTagName("script")[0];
-      if (firstScript?.parentNode) firstScript.parentNode.insertBefore(script, firstScript);
-      else document.head.appendChild(script);
-
-      fbq("init", "1108400925358092");
+      if (!document.getElementById("meta-pixel-script")) {
+        const script = document.createElement("script");
+        script.id = "meta-pixel-script";
+        script.async = true;
+        script.src = "https://connect.facebook.net/en_US/fbevents.js";
+        (document.head || document.documentElement).appendChild(script);
+      }
     }
 
-    pixelWindow.fbq?.("track", "PageView");
+    if (!pixelWindow.__mundoMetaPixelInitialized) {
+      pixelWindow.fbq("init", "1108400925358092");
+      pixelWindow.__mundoMetaPixelInitialized = true;
+    }
+
+    pixelWindow.fbq("track", "PageView");
   }, [location.pathname, location.searchStr]);
 
   return (
