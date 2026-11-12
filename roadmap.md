@@ -1,5 +1,9 @@
 # Integração do Pixel
 
+## Troca do provedor Pix
+- [ ] Substituir InvictusPay por Fruitfy, preservando preços, frete, checkout e confirmação de pagamento.
+- [ ] Configurar credenciais Fruitfy e verificar geração e consulta do Pix; depende do token e Store-Id da loja.
+
 ## Revisão da loja
 - [x] Remover a barra vermelha e manter somente a preta rolante, conforme o pedido mais recente; confirmado visualmente no celular.
 - [x] Corrigir carrinho inválido/armazenamento bloqueado, menu acessível, endereço antigo ao mudar CEP, cópia Pix sem confirmação, avisos incorretos e overflow no rodapé, preservando preços e Pix.
