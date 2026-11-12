@@ -11,7 +11,7 @@ export function ProductCard({ product, eager = false, cols = 6, layout = "carous
   const pp = productPrice(product);
   const off = discountPercent(pp);
   const [a, b] = product.images;
-  const sizes = cols === 6 ? "(min-width: 1280px) 230px, (min-width: 768px) 220px, 72vw" : "(min-width: 1280px) 288px, (min-width: 1024px) 24vw, 72vw";
+  const sizes = layout === "grid" ? "(min-width: 1280px) 288px, (min-width: 1024px) 24vw, (min-width: 640px) 30vw, 46vw" : cols === 6 ? "(min-width: 1280px) 230px, (min-width: 768px) 220px, 72vw" : "(min-width: 1280px) 288px, (min-width: 1024px) 24vw, 72vw";
   const sources = (src: string) => [400, 640, 800, 1200].map((width) => `${img(src, width)} ${width}w`).join(", ");
 
   return (
