@@ -58,7 +58,7 @@ export function Footer() {
       <div className="bg-ink text-ink-foreground">
         <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-4">
           <div>
-            <p className="flex items-center gap-2 font-heading text-2xl">Mundo Natalino</p>
+            <img src="/logo-mundo-natalino.svg" alt="Mundo Natalino" className="h-auto w-full max-w-[220px] object-contain object-left" />
             <p className="mt-4 text-xs opacity-70">Tudo para transformar momentos em memórias que brilham.</p>
             <Link to="/collections/$handle" params={{ handle: "all" }} className="mt-4 inline-block text-xs font-semibold text-accent">Conhecer a coleção ›</Link>
           </div>
