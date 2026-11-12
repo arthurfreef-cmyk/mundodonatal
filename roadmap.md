@@ -4,7 +4,7 @@
 - [ ] Substituir InvictusPay por Fruitfy, preservando preços, frete, checkout e confirmação de pagamento; aguardando documentação completa de criação e consulta do Pix (acesso público bloqueado).
 - [ ] Configurar credenciais Fruitfy e verificar geração e consulta do Pix; depende da documentação, token e Store-Id da loja. Manter o provedor atual até a troca estar validada.
 - [x] Salvar FRUITFY_API_TOKEN e FRUITFY_STORE_ID pelo formulário seguro, sem expor os valores.
-- [ ] Implementar pedidos persistentes, webhooks autenticados e processamento idempotente; depende do contrato oficial de assinatura, eventos e consulta Fruitfy.
+- [ ] Implementar pedidos persistentes, webhooks autenticados e processamento idempotente; exemplo order_paid recebido com webhook_id e order.id, mas faltam o método oficial de autenticação, criação e consulta do Pix e a unidade monetária documentada. Não tratar o exemplo como pagamento real.
 
 ## Revisão da loja
 - [x] Remover a barra vermelha e manter somente a preta rolante, conforme o pedido mais recente; confirmado visualmente no celular.
