@@ -79,7 +79,7 @@ export function CheckoutDetails({ values: f, setValues: setF, cepState, options,
         {options.map((option) => (
           <label key={option.id} className={cn("flex cursor-pointer items-center gap-3 rounded-lg border p-4 text-sm transition-colors", ship === option.id ? "border-secondary bg-secondary/5 ring-1 ring-secondary/20" : "border-border bg-background hover:border-secondary/50")}>
             <input type="radio" name="ship" aria-label={option.label} checked={ship === option.id} onChange={() => setShip(option.id)} className="h-4 w-4 accent-secondary" />
-            <Truck className="h-5 w-5 shrink-0 text-secondary" />
+            {option.id === "sedex" ? <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Sedex_logo.png" alt="SEDEX Correios" className="h-auto w-20 shrink-0 rounded-sm object-contain" /> : <Truck className="h-5 w-5 shrink-0 text-secondary" />}
             <span className="min-w-0 flex-1"><b>{option.label}</b><span className="block text-xs text-muted-foreground">{option.days}</span></span>
             <b className="shrink-0 text-secondary">{option.price === 0 ? "GRÁTIS" : formatBRL(option.price)}</b>
           </label>
