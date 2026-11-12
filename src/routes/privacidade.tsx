@@ -24,7 +24,7 @@ function PrivacyPage() {
       <section className="mt-8 space-y-4 text-sm leading-relaxed">
         <h2 className="text-2xl">Armazenamento essencial</h2>
         <p>Esta loja utiliza armazenamento local e recursos técnicos essenciais para manter o carrinho, lembrar os itens selecionados e permitir a navegação e a finalização da compra.</p>
-        <p>Não utilizamos pixels de rastreamento publicitário ou ferramentas de analytics para acompanhar sua navegação nesta loja.</p>
+        <p>Utilizamos o Pixel da Meta (Meta Platforms) para registrar visualizações de páginas e medir o desempenho de campanhas publicitárias. Esse recurso pode utilizar cookies e tecnologias semelhantes, como _fbp e _fbc, para reconhecer o navegador e atribuir visitas a anúncios do Facebook e Instagram. Você pode gerenciar cookies nas configurações do seu navegador.</p>
       </section>
       <section className="mt-8 space-y-4 text-sm leading-relaxed">
         <h2 className="text-2xl">Dados para sua compra</h2>
