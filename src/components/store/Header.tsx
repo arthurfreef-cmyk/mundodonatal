@@ -23,7 +23,7 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b bg-background">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 md:px-8">
         <Button asChild variant="ghost" size="icon"><Link to="/" aria-label="Voltar à loja"><ArrowLeft /></Link></Button>
-        <Link to="/" aria-label="Mundo Natalino" className="inline-flex min-w-0 items-center justify-center"><img src="/logo-mundo-natalino.svg" alt="Mundo Natalino" className="h-12 w-auto max-w-[190px] object-contain sm:h-14 sm:max-w-[220px]" /></Link>
+        <Link to="/" aria-label="Mundo Natalino" className="inline-flex min-w-0 items-center justify-center"><img src="/logo-mundo-natalino.svg" alt="Mundo Natalino" className="h-12 w-[220px] max-w-full object-contain sm:h-14 sm:w-[250px]" /></Link>
         <span className="flex items-center gap-1.5 text-xs text-secondary"><Lock className="h-4 w-4" /><span className="hidden sm:inline">Compra segura</span></span>
       </div>
     </header>
@@ -53,7 +53,7 @@ export function Header() {
             <Menu className="h-5 w-5" />
           </Button>
           <Link to="/" aria-label="Mundo Natalino" className="flex shrink-0 items-center">
-            <img src="/logo-mundo-natalino.svg" alt="Mundo Natalino" className="h-14 w-auto max-w-[220px] object-contain sm:h-16 sm:max-w-[250px]" />
+            <img src="/logo-mundo-natalino.svg" alt="Mundo Natalino" className="h-14 w-[240px] max-w-full object-contain sm:h-16 sm:w-[280px]" />
           </Link>
           <form onSubmit={onSearch} className="mx-auto hidden w-full max-w-md md:block">
             <label className="flex items-center rounded-sm border bg-cream px-3">
