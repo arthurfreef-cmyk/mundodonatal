@@ -63,8 +63,8 @@ export function ProductCard({ product, eager = false, cols = 6, layout = "carous
 
 export function ProductGrid({ items, cols = 6, prioritizeFirstRow = false, trackRef, layout = "carousel" }: { items: Product[]; cols?: 4 | 6; prioritizeFirstRow?: boolean; trackRef?: React.RefObject<HTMLDivElement | null>; layout?: "carousel" | "grid" }) {
   return (
-    <div ref={trackRef} className="scrollbar-none flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-2 scroll-smooth md:gap-4">
-      {items.map((p, index) => <ProductCard key={p.handle} product={p} cols={cols} eager={prioritizeFirstRow && index < 3} />)}
+    <div ref={trackRef} className={layout === "grid" ? "grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4" : "scrollbar-none flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-2 scroll-smooth md:gap-4"}>
+      {items.map((p, index) => <ProductCard key={p.handle} product={p} cols={cols} layout={layout} eager={prioritizeFirstRow && index < 3} />)}
     </div>
   );
 }
