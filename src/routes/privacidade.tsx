@@ -7,9 +7,9 @@ import { AD_CHOICE_EVENT, AD_NOTICE, AD_STORAGE_KEY, currentAdvertisingPermissio
 export const Route = createFileRoute("/privacidade")({
   head: () => ({
     meta: [
-      { title: "Privacidade e cookies | Mundo do Natal" },
-      { name: "description", content: "Informações sobre dados, Pixel da Meta e escolhas de cookies de publicidade no Mundo do Natal." },
-      { property: "og:title", content: "Privacidade e cookies | Mundo do Natal" },
+      { title: "Privacidade e cookies | Mundo Natalino" },
+      { name: "description", content: "Informações sobre dados, Pixel da Meta e escolhas de cookies de publicidade no Mundo Natalino." },
+      { property: "og:title", content: "Privacidade e cookies | Mundo Natalino" },
       { property: "og:description", content: "Consulte o uso de dados e gerencie suas escolhas de cookies de publicidade." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -54,7 +54,7 @@ function PrivacyPage() {
   };
   return (
     <main className="mx-auto max-w-3xl px-5 py-12 md:px-8">
-      <div className="flex items-center gap-3 text-secondary"><ShieldCheck className="h-7 w-7" /><p className="eyebrow">Mundo do Natal</p></div>
+      <div className="flex items-center gap-3 text-secondary"><ShieldCheck className="h-7 w-7" /><p className="eyebrow">Mundo Natalino</p></div>
       <h1 className="mt-4 text-4xl">Privacidade e cookies</h1>
       <p className="mt-3 text-xs text-muted-foreground">Atualizado em 31 de outubro de 2026</p>
       <section className="mt-8 space-y-4 text-sm leading-relaxed">
