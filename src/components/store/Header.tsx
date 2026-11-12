@@ -44,6 +44,9 @@ export function Header() {
           </div>
         </Link>
       )}
+      <div className="flex items-center justify-center gap-2 bg-emerald-600 px-3 py-2 text-center text-xs font-semibold text-white sm:text-sm">
+        <Package className="h-4 w-4" /> Frete grátis para todo o Brasil
+      </div>
       <div className="border-b">
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 md:px-8">
           <Button variant="ghost" size="icon" className="md:hidden" aria-label="Abrir menu" onClick={() => setMenu(true)}>
