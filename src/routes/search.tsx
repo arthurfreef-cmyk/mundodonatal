@@ -12,7 +12,7 @@ export const Route = createFileRoute("/search")({
     return (
       <main className="mx-auto max-w-7xl px-4 py-10 md:px-8">
         <h1 className="mb-6 text-4xl">Resultados para “{q}”</h1>
-        {items.length ? <ProductGrid items={items} cols={4} /> : <p className="text-sm text-muted-foreground">Nenhum produto encontrado.</p>}
+        {items.length ? <ProductGrid items={items} cols={4} layout="grid" /> : <p className="text-sm text-muted-foreground">Nenhum produto encontrado.</p>}
       </main>
     );
   },
