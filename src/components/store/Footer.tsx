@@ -75,7 +75,7 @@ export function Footer() {
         </div>
         <div className="mx-auto max-w-6xl border-t border-ink-foreground/10 px-6 py-6 text-[10px] opacity-60">
           <p className="flex items-center gap-2"><Award className="h-3 w-3" /> Pagamento via Pix</p>
-          <p className="mt-3">© 2026 Mundo do Natal. Todos os direitos reservados.</p>
+          <p className="mt-3">© 2026 Mundo Natalino. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>
