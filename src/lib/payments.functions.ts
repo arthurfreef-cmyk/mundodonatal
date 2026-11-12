@@ -14,7 +14,7 @@ const OrderSchema = z.object({
     phone: z.string().regex(/^\d{10,11}$/),
   }),
   cep: z.string().max(9),
-  shipping: z.enum(["free", "express"]),
+  shipping: z.enum(["free", "sedex"]),
 });
 
 function apiKey(): string {
@@ -50,7 +50,7 @@ export const createPixPayment = createServerFn({ method: "POST" })
     });
     const cep = cleanCep(data.cep);
     if (!cep) throw new Error("CEP inválido.");
-    const ship = shippingOptions(cep).find((o) => o.id === data.shipping);
+    const ship = shippingOptions(cep, data.customer.document).find((o) => o.id === data.shipping);
     if (ship && ship.price > 0) items.push({ description: `Frete - ${ship.label}`, quantity: 1, amount: Math.round(ship.price * 100) });
     const amount = items.reduce((s, i) => s + i.amount, 0);
 
