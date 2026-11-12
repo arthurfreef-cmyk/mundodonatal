@@ -16,9 +16,9 @@ export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
       { title: "Finalizar compra | Mundo Natalino" },
-      { name: "description", content: "Checkout seguro do Mundo Natalino com frete grátis e entrega expressa." },
+      { name: "description", content: "Checkout do Mundo Natalino com frete grátis e opção de entrega SEDEX." },
       { property: "og:title", content: "Finalizar compra | Mundo Natalino" },
-      { property: "og:description", content: "Checkout seguro com frete grátis." },
+      { property: "og:description", content: "Checkout com frete grátis ou entrega SEDEX." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
