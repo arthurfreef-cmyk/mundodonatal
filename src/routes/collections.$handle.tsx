@@ -29,7 +29,7 @@ export const Route = createFileRoute("/collections/$handle")({
           <p className="mt-4 max-w-xl text-sm opacity-90">{d.description}</p>
         </section>
         <p className="mb-4 text-sm"><b>{d.items.length} produtos</b> selecionados para você</p>
-        <ProductGrid items={d.items} cols={4} />
+        <ProductGrid items={d.items} cols={4} layout="grid" />
       </main>
     );
   },
