@@ -7,6 +7,8 @@
 - [x] Salvar FRUITFY_API_TOKEN e FRUITFY_STORE_ID pelo formulário seguro, sem expor os valores.
 - [x] Salvar FRUITFY_PRODUCT_ID em segredo para uso único em todos os produtos na integração Fruitfy; preservar os identificadores do catálogo da loja.
 - [ ] Implementar pedidos persistentes, webhooks autenticados e processamento idempotente; exemplo order_paid recebido com webhook_id e order.id, mas faltam o método oficial de autenticação, criação e consulta do Pix e a unidade monetária documentada. Não tratar o exemplo como pagamento real.
+- [ ] Capturar apenas UTMs na primeira visita, enviá-las na cobrança, restaurar dados do comprador com armazenamento seguro e disparar Purchase somente após confirmação oficial; depende da integração e de pedidos persistentes.
+- [ ] Validar geração real, consulta e resposta 401 sem simular aprovação; reentrada de credenciais apenas por formulário seguro. Documentação oficial continua redirecionando para login em 12/11/2026.
 
 ## Revisão da loja
 - [x] Remover a barra vermelha e manter somente a preta rolante, conforme o pedido mais recente; confirmado visualmente no celular.
