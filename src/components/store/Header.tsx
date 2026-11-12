@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Lock, Menu, Package, Search, ShoppingBag } from "lucide-react";
 import { StoreDrawer } from "./StoreDrawer";
 import { useState, type FormEvent } from "react";
-import { ASSET, NAV, WHATSAPP } from "@/lib/catalog";
+import { NAV, WHATSAPP } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
 import { BLACK_FRIDAY } from "@/lib/promo";
 import { Button } from "@/components/ui/button";
