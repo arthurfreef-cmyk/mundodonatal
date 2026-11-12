@@ -1,14 +1,12 @@
 # Integração do Pixel
 
 ## Troca do provedor Pix
-- [x] Remover o provedor anterior e suas chamadas, preservando o visual; Pix indisponível até completar a Fruitfy, conforme solicitado.
-- [ ] Aplicar o exemplo recebido de cobrança com name/email/phone/cpf/items/utm; confirmar caminho de produção e resposta Pix, pois o exemplo usa localhost e não contém retorno.
-- [ ] Ativar Fruitfy e verificar geração e consulta do Pix; credenciais salvas, mas depende da documentação completa de criação e consulta. Não utilizar outro provedor.
-- [x] Salvar FRUITFY_API_TOKEN e FRUITFY_STORE_ID pelo formulário seguro, sem expor os valores.
-- [x] Salvar FRUITFY_PRODUCT_ID em segredo para uso único em todos os produtos na integração Fruitfy; preservar os identificadores do catálogo da loja.
-- [ ] Implementar pedidos persistentes, webhooks autenticados e processamento idempotente; exemplo order_paid recebido com webhook_id e order.id, mas faltam o método oficial de autenticação, criação e consulta do Pix e a unidade monetária documentada. Não tratar o exemplo como pagamento real.
-- [ ] Capturar apenas UTMs na primeira visita, enviá-las na cobrança, restaurar dados do comprador com armazenamento seguro e disparar Purchase somente após confirmação oficial; depende da integração e de pedidos persistentes.
-- [ ] Validar geração real, consulta e resposta 401 sem simular aprovação; reentrada de credenciais apenas por formulário seguro. Documentação oficial continua redirecionando para login em 12/11/2026.
+- [x] Remover o provedor anterior; usar somente a Fruitfy.
+- [x] Salvar token, loja e ID de produto Fruitfy como segredos.
+- [x] Gerar Pix Fruitfy no servidor (valor em centavos recalculado, origem da campanha enviada) e mostrar QR/copia e cola; testado com 2 produtos (R$ 47,46).
+- [x] Confirmar pagamento consultando o pedido na Fruitfy a cada 5 s; Purchase só após confirmação, com o valor pago.
+- [x] Lembrar nome, e-mail e celular do comprador no aparelho para a próxima compra.
+- [ ] Webhooks Fruitfy com processamento único: depende de guardar pedidos (Lovable Cloud) e do formato oficial de autenticação dos avisos; aguardando decisão do usuário.
 
 ## Revisão da loja
 - [x] Remover a barra vermelha e manter somente a preta rolante, conforme o pedido mais recente; confirmado visualmente no celular.

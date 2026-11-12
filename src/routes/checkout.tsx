@@ -8,6 +8,8 @@ import { cleanCep, lookupCep, shippingOptions, type ShippingOption } from "@/lib
 import { isValidCpf } from "@/lib/br";
 import { useServerFn } from "@tanstack/react-start";
 import { createPixPayment, getPaymentStatus } from "@/lib/payments.functions";
+import { readUtms } from "@/lib/utm";
+import { loadBuyer, saveBuyer } from "@/lib/buyer";
 import { Button } from "@/components/ui/button";
 import { CheckoutDetails } from "@/components/store/CheckoutDetails";
 import { CheckoutSummary } from "@/components/store/CheckoutSummary";
@@ -28,6 +30,17 @@ export const Route = createFileRoute("/checkout")({
 
 
 
+/** Purchase só depois da confirmação da Fruitfy, com o valor efetivamente pago (centavos → reais). */
+function trackPurchase(orderId: string, amountCents: number) {
+  const w = window as typeof window & { fbq?: (...args: unknown[]) => void };
+  try {
+    const key = `mn-purchase-${orderId}`;
+    if (window.sessionStorage.getItem(key)) return;
+    window.sessionStorage.setItem(key, "1");
+  } catch { /* storage indisponível: o ref do componente já evita repetição */ }
+  w.fbq?.("track", "Purchase", { value: amountCents / 100, currency: "BRL" }, { eventID: orderId });
+}
+
 function Checkout() {
   const { lines, subtotal, setOpen, clear } = useCart();
   const [f, setF] = useState({ email: "", name: "", phone: "", cpf: "", cep: "", street: "", number: "", comp: "", district: "", city: "", state: "" });
@@ -36,6 +49,11 @@ function Checkout() {
   const [done, setDone] = useState(false);
   const paymentConfirmed = useRef(false);
   useEffect(() => setOpen(false), [setOpen]);
+  // Restaura os dados de contato da última compra neste aparelho.
+  useEffect(() => {
+    const b = loadBuyer();
+    if (b) setF((s) => ({ ...s, name: s.name || b.name, email: s.email || b.email, phone: s.phone || b.phone }));
+  }, []);
 
   // Busca o endereço automaticamente quando o CEP fica completo.
   useEffect(() => {
@@ -72,10 +90,13 @@ function Checkout() {
     if (!pix?.id || done) return;
     const t = setInterval(async () => {
       try {
-        const { status } = await checkStatus({ data: { id: pix.id } });
-        if (String(status) === "paid" && !paymentConfirmed.current) {
+        const r = await checkStatus({ data: { id: pix.id } });
+        if (r.status === "paid" && !paymentConfirmed.current) {
           paymentConfirmed.current = true;
+          trackPurchase(pix.id, r.amount);
           setDone(true); clear();
+        } else if (r.status === "canceled") {
+          setPix(null); setErr("Este Pix foi cancelado ou expirou. Gere um novo para concluir a compra.");
         }
       } catch { /* tenta de novo */ }
     }, 5000);
@@ -89,9 +110,10 @@ function Checkout() {
       const r = await createPix({ data: {
         items: lines.map((l) => ({ handle: l.handle, variantId: l.variantId, qty: l.qty })),
         customer: { name: f.name.trim(), email: f.email.trim(), document: f.cpf.replace(/\D/g, ""), phone: f.phone.replace(/\D/g, "") },
-        cep: f.cep, shipping: ship,
+        cep: f.cep, shipping: ship, utm: readUtms(),
       } });
       if (!r.ok) setErr(r.error); else {
+        saveBuyer({ name: f.name.trim(), email: f.email.trim(), phone: f.phone });
         setPix(r);
       }
     } catch { setErr("Não foi possível gerar o Pix. Tente novamente."); }

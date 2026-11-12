@@ -19,6 +19,7 @@ import { Footer } from "@/components/store/Footer";
 import { CartDrawer } from "@/components/store/CartDrawer";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
+import { captureUtms } from "@/lib/utm";
 
 function NotFoundComponent() {
   return (
@@ -125,6 +126,11 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const location = useLocation();
+
+  // Guarda a origem da campanha (primeiro acesso) para enviar junto com o Pix.
+  useEffect(() => {
+    captureUtms(window.location.search);
+  }, [location.href]);
 
   useEffect(() => {
     const utmifyWindow = window as typeof window & { pixelId?: string };
