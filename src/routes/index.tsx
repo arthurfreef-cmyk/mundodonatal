@@ -15,7 +15,7 @@ function nextChristmasTarget(): string {
 }
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: [{ title: "Mundo do Natal | Árvores e Decoração de Natal" }, { name: "description", content: `Árvores realistas e decorações de Natal. Black Friday com ${BLACK_FRIDAY.percent}% OFF em todo o site.` }, { property: "og:title", content: "Mundo do Natal" }, { property: "og:description", content: `Black Friday ${BLACK_FRIDAY.percent}% OFF em árvores e decoração de Natal.` }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }, { property: "og:image", content: ASSET("hero-video-poster-mobile.webp") }, { name: "twitter:image", content: ASSET("hero-video-poster-mobile.webp") }] }),
+  head: () => ({ meta: [{ title: "Mundo Natalino | Árvores e Decoração de Natal" }, { name: "description", content: `Árvores realistas e decorações de Natal. Black Friday com ${BLACK_FRIDAY.percent}% OFF em todo o site.` }, { property: "og:title", content: "Mundo Natalino" }, { property: "og:description", content: `Black Friday ${BLACK_FRIDAY.percent}% OFF em árvores e decoração de Natal.` }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }, { property: "og:image", content: ASSET("hero-video-poster-mobile.webp") }, { name: "twitter:image", content: ASSET("hero-video-poster-mobile.webp") }] }),
   component: Index,
 });
 
@@ -49,11 +49,11 @@ function Index() {
   return (
     <main>
       <section className="relative h-[420px] overflow-hidden md:h-[440px]">
-        <video autoPlay muted loop playsInline preload="none" poster={ASSET("hero-video-poster-mobile.webp")} aria-label="Árvore de Natal decorada do Mundo do Natal" className="absolute inset-0 h-full w-full object-cover object-[center_60%]" src="https://mundodonatal.com/cdn/shop/videos/c/vp/7dae404430564ab8b9ec66556a69b1c0/7dae404430564ab8b9ec66556a69b1c0.HD-720p-2.1Mbps-94990453.mp4?v=0" />
+        <video autoPlay muted loop playsInline preload="none" poster={ASSET("hero-video-poster-mobile.webp")} aria-label="Árvore de Natal decorada do Mundo Natalino" className="absolute inset-0 h-full w-full object-cover object-[center_60%]" src="https://mundodonatal.com/cdn/shop/videos/c/vp/7dae404430564ab8b9ec66556a69b1c0/7dae404430564ab8b9ec66556a69b1c0.HD-720p-2.1Mbps-94990453.mp4?v=0" />
         <div className="hero-overlay absolute inset-0" />
         <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-center px-6 text-primary-foreground md:px-8">
           <p className="text-xs font-medium">Coleção Natal 2026</p>
-          <h1 className="mt-2 max-w-md text-3xl leading-tight md:text-5xl">Mundo do Natal</h1>
+          <h1 className="mt-2 max-w-md text-3xl leading-tight md:text-5xl">Mundo Natalino</h1>
           {BLACK_FRIDAY.active && (
             <Link to="/black-friday" className="mt-3 flex w-fit items-center gap-2 rounded-md bg-amber-300 px-3 py-1.5 text-xs font-bold text-emerald-950 shadow-sm transition-colors hover:bg-amber-200">
               Black Friday · {BLACK_FRIDAY.percent}% OFF em todo o site <ArrowRight className="h-3.5 w-3.5" />
