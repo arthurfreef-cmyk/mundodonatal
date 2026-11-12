@@ -115,6 +115,20 @@ function RootComponent() {
   const location = useLocation();
 
   useEffect(() => {
+    const utmifyWindow = window as typeof window & { pixelId?: string };
+    utmifyWindow.pixelId = "6af63b44e978312a61bf3fe1";
+
+    if (!document.querySelector('script[data-utmify-pixel="true"]')) {
+      const utmifyScript = document.createElement("script");
+      utmifyScript.src = "https://cdn.utmify.com.br/scripts/pixel/pixel.js";
+      utmifyScript.async = true;
+      utmifyScript.defer = true;
+      utmifyScript.setAttribute("data-utmify-pixel", "true");
+      (document.head || document.documentElement).appendChild(utmifyScript);
+    }
+  }, []);
+
+  useEffect(() => {
     const pixelWindow = window as typeof window & {
       fbq?: (...args: unknown[]) => void;
       _fbq?: (...args: unknown[]) => void;
