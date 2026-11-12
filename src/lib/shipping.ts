@@ -1,20 +1,18 @@
 /**
- * Regras de frete do checkout.
- * - "Expresso": valor entre R$ 7,00 e R$ 12,00, gerado de forma estável a partir do CEP
- *   (o mesmo CEP sempre recebe o mesmo valor).
- * - "Grátis": sempre disponível, com prazo maior.
+ * Opções de entrega exibidas no checkout.
+ * O valor do SEDEX varia por comprador (CEP + documento) e é recalculado
+ * no servidor com os mesmos dados antes de gerar o Pix.
  */
-export const SHIPPING_MIN = 7;
-export const SHIPPING_MAX = 12;
+export const SHIPPING_MIN_CENTS = 801;
+export const SHIPPING_MAX_CENTS = 1199;
 
 export interface ShippingOption {
-  id: "free" | "express";
+  id: "free" | "sedex";
   label: string;
   days: string;
   price: number;
 }
 
-/** Remove tudo que não for dígito e valida 8 dígitos. */
 export function cleanCep(cep: string): string | null {
   const d = cep.replace(/\D/g, "");
   return d.length === 8 ? d : null;
@@ -25,21 +23,24 @@ export function maskCep(v: string): string {
   return d.length > 5 ? `${d.slice(0, 5)}-${d.slice(5)}` : d;
 }
 
-/** Valor do frete expresso (R$ 7–12, centavos .90) derivado do CEP. */
-export function expressPrice(cep: string): number {
+/** Valor individual entre R$ 8,01 e R$ 11,99, estável para o mesmo cliente. */
+export function sedexPrice(cep: string, identity = ""): number {
   const d = cleanCep(cep);
-  if (!d) return SHIPPING_MAX;
-  let h = 0;
-  for (const c of d) h = (h * 31 + Number(c)) % 1000;
-  const steps = SHIPPING_MAX - SHIPPING_MIN; // 5 → 7,90 .. 11,90 + 12,00 teto
-  const value = SHIPPING_MIN + (h % (steps + 1)) + 0.9;
-  return Math.min(SHIPPING_MAX, Math.round(value * 100) / 100);
+  if (!d) return 11.99;
+  const seed = `${d}:${identity.replace(/\D/g, "")}`;
+  let hash = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    hash ^= seed.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  const cents = SHIPPING_MIN_CENTS + ((hash >>> 0) % (SHIPPING_MAX_CENTS - SHIPPING_MIN_CENTS + 1));
+  return cents / 100;
 }
 
-export function shippingOptions(cep: string): ShippingOption[] {
+export function shippingOptions(cep: string, identity = ""): ShippingOption[] {
   return [
     { id: "free", label: "Frete Grátis", days: "7 a 12 dias úteis", price: 0 },
-    { id: "express", label: "Entrega Expressa", days: "3 a 5 dias úteis", price: expressPrice(cep) },
+    { id: "sedex", label: "Via Sedex", days: "Entrega pelos Correios", price: sedexPrice(cep, identity) },
   ];
 }
 
@@ -50,7 +51,6 @@ export interface CepAddress {
   state: string;
 }
 
-/** Busca endereço no ViaCEP. Retorna null quando o CEP não existe. */
 export async function lookupCep(cep: string): Promise<CepAddress | null> {
   const d = cleanCep(cep);
   if (!d) return null;
