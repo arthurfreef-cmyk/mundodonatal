@@ -1,4 +1,4 @@
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Award, Heart, ShieldCheck, Sparkles, Truck } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
@@ -17,7 +17,6 @@ const pol = ["Aviso Legal", "Termos de Serviço", "Política de Privacidade", "P
 
 export function Footer() {
   const [email, setEmail] = useState("");
-  const { pathname } = useLocation();
   const submit = (e: FormEvent) => {
     e.preventDefault();
     if (!/^\S+@\S+\.\S+$/.test(email)) {
@@ -26,12 +25,6 @@ export function Footer() {
     }
     toast.info("O cadastro de novidades ainda não está disponível. Fale com nosso atendimento.");
   };
-  if (pathname === "/checkout") return (
-    <footer className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-t px-4 py-6 text-xs text-muted-foreground md:px-8">
-      <p>© 2026 Mundo Natalino</p>
-      <div className="flex items-center gap-5"><Link to="/privacidade" className="hover:text-primary">Privacidade</Link><a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer" className="hover:text-primary">Atendimento</a></div>
-    </footer>
-  );
   return (
     <footer>
       <div className="mx-auto grid max-w-5xl grid-cols-2 border-t md:grid-cols-4">
