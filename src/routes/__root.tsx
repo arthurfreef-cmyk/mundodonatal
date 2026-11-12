@@ -111,6 +111,40 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const location = useRouter().state.location;
+
+  useEffect(() => {
+    const pixelWindow = window as typeof window & {
+      fbq?: (...args: unknown[]) => void;
+      _fbq?: (...args: unknown[]) => void;
+    };
+
+    if (!pixelWindow.fbq) {
+      const fbq = function (...args: unknown[]) {
+        const callable = fbq as typeof fbq & { callMethod?: (...values: unknown[]) => void; queue: unknown[][]; loaded?: boolean; version?: string };
+        if (callable.callMethod) callable.callMethod(...args);
+        else callable.queue.push(args);
+      } as typeof pixelWindow.fbq & { queue: unknown[][]; push: (...args: unknown[]) => void; loaded: boolean; version: string };
+
+      fbq.queue = [];
+      fbq.push = fbq;
+      fbq.loaded = true;
+      fbq.version = "2.0";
+      pixelWindow.fbq = fbq;
+      pixelWindow._fbq = fbq;
+
+      const script = document.createElement("script");
+      script.async = true;
+      script.src = "https://connect.facebook.net/en_US/fbevents.js";
+      const firstScript = document.getElementsByTagName("script")[0];
+      if (firstScript?.parentNode) firstScript.parentNode.insertBefore(script, firstScript);
+      else document.head.appendChild(script);
+
+      fbq("init", "1108400925358092");
+    }
+
+    pixelWindow.fbq("track", "PageView");
+  }, [location.pathname, location.searchStr]);
 
   return (
     <QueryClientProvider client={queryClient}>
