@@ -43,7 +43,7 @@ function ProductDetails({ product }: { product: NonNullable<ReturnType<typeof ge
   if (!v) return null;
   const pp = variantPrice(v);
   return (
-    <main className="mx-auto grid max-w-6xl gap-10 px-4 py-10 md:grid-cols-2">
+    <main className="mx-auto grid max-w-7xl items-start gap-8 px-4 py-6 sm:py-8 md:grid-cols-2 md:gap-12 md:px-8 md:py-10">
       <div>
         <img src={img(product.images[im]?.src, 1000)} alt={product.title} fetchPriority="high" width={1000} height={1000} className="aspect-square w-full bg-muted object-cover" />
         <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
