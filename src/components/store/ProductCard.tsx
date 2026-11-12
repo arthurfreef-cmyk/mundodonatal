@@ -4,8 +4,9 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { img, isAvailable, productPrice, type Product } from "@/lib/catalog";
 import { discountPercent, formatBRL } from "@/lib/promo";
+import { cn } from "@/lib/utils";
 
-export function ProductCard({ product, eager = false, cols = 6 }: { product: Product; eager?: boolean; cols?: 4 | 6 }) {
+export function ProductCard({ product, eager = false, cols = 6, layout = "carousel" }: { product: Product; eager?: boolean; cols?: 4 | 6; layout?: "carousel" | "grid" }) {
   const [showAlternate, setShowAlternate] = useState(false);
   const pp = productPrice(product);
   const off = discountPercent(pp);
@@ -14,7 +15,7 @@ export function ProductCard({ product, eager = false, cols = 6 }: { product: Pro
   const sources = (src: string) => [400, 640, 800, 1200].map((width) => `${img(src, width)} ${width}w`).join(", ");
 
   return (
-    <article onMouseEnter={() => setShowAlternate(true)} onFocus={() => setShowAlternate(true)} className="group flex h-full w-[min(76vw,250px)] shrink-0 snap-start flex-col overflow-hidden rounded-md border bg-card sm:w-[230px] lg:w-[240px]">
+    <article onMouseEnter={() => setShowAlternate(true)} onFocus={() => setShowAlternate(true)} className={cn("group flex h-full flex-col overflow-hidden rounded-md border bg-card", layout === "grid" ? "w-full min-w-0" : "w-[min(76vw,250px)] shrink-0 snap-start sm:w-[230px] lg:w-[240px]")}>
       <Link to="/products/$handle" params={{ handle: product.handle }} className="relative block aspect-[4/5] overflow-hidden bg-muted">
         {a && (
           <img
@@ -60,7 +61,7 @@ export function ProductCard({ product, eager = false, cols = 6 }: { product: Pro
   );
 }
 
-export function ProductGrid({ items, cols = 6, prioritizeFirstRow = false, trackRef }: { items: Product[]; cols?: 4 | 6; prioritizeFirstRow?: boolean; trackRef?: React.RefObject<HTMLDivElement | null> }) {
+export function ProductGrid({ items, cols = 6, prioritizeFirstRow = false, trackRef, layout = "carousel" }: { items: Product[]; cols?: 4 | 6; prioritizeFirstRow?: boolean; trackRef?: React.RefObject<HTMLDivElement | null>; layout?: "carousel" | "grid" }) {
   return (
     <div ref={trackRef} className="scrollbar-none flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-2 scroll-smooth md:gap-4">
       {items.map((p, index) => <ProductCard key={p.handle} product={p} cols={cols} eager={prioritizeFirstRow && index < 3} />)}
