@@ -171,7 +171,7 @@ function Checkout() {
   }
 
   return (
-    <main className="mx-auto grid max-w-6xl gap-8 px-4 py-6 md:grid-cols-[minmax(0,1fr)_360px] md:gap-12 md:px-8 md:py-10">
+    <main className="mx-auto grid max-w-6xl grid-cols-1 items-start gap-6 px-4 py-4 sm:gap-8 sm:py-6 md:grid-cols-[minmax(0,1fr)_340px] md:gap-12 md:px-8 md:py-10">
       <CheckoutDetails values={f} setValues={setF} cepState={cepState} options={options} ship={ship} setShip={setShip} total={total} ready={ready} paying={paying} error={err} onPay={pay} />
       <CheckoutSummary savings={savings} shipping={shipping} total={total} hasShipping={options.length > 0} />
     </main>
