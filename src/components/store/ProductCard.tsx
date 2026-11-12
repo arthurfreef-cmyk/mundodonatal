@@ -53,6 +53,7 @@ export function ProductCard({ product, eager = false, cols = 6 }: { product: Pro
           <span className="text-sm font-bold text-primary">{formatBRL(pp.price)}</span>
           {pp.compareAt && <s className="text-[11px] text-muted-foreground">{formatBRL(pp.compareAt)}</s>}
         </div>
+        <span className="mt-2 inline-flex w-fit items-center rounded-sm bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-700">Frete grátis</span>
         <Button asChild variant="outline" className="mt-4 w-full justify-between px-3 text-xs"><Link to="/products/$handle" params={{ handle: product.handle }}>Ver detalhes <ArrowRight /></Link></Button>
       </div>
     </article>
