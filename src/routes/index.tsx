@@ -71,7 +71,7 @@ function Index() {
               <Link to="/collections/$handle" params={{ handle: "enfeites" }} className="inline-flex min-h-9 items-center gap-1.5 rounded-md border border-emerald-400/40 bg-emerald-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-emerald-500">
                 Ver enfeites natalinos <ArrowRight className="h-3.5 w-3.5" />
               </Link>
-              <Link to="/collections/$handle" params={{ handle: "guirlandas-natalinas" }} className="inline-flex min-h-9 items-center gap-1.5 rounded-md border border-white/70 bg-white/95 px-3 py-2 text-xs font-semibold text-emerald-950 shadow-sm transition-colors hover:bg-amber-100">
+              <Link to="/collections/$handle" params={{ handle: "guirlandas-natalinas" }} className="inline-flex min-h-9 items-center gap-1.5 rounded-md border border-emerald-400/40 bg-emerald-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-emerald-500">
                 Ver guirlandas <ArrowRight className="h-3.5 w-3.5" />
               </Link>
               <Link to="/collections/$handle" params={{ handle: "luzes" }} className="inline-flex min-h-9 items-center gap-1.5 rounded-md border border-white/70 bg-white/95 px-3 py-2 text-xs font-semibold text-emerald-950 shadow-sm transition-colors hover:bg-amber-100">
