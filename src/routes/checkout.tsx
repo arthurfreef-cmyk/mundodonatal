@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { BadgeCheck, Check, Loader2, QrCode, ShieldCheck, Smartphone } from "lucide-react";
+import { BadgeCheck, Check, Loader2, QrCode, Smartphone } from "lucide-react";
 import { variantPrice } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/lib/promo";
@@ -139,7 +139,6 @@ function Checkout() {
           <li className="flex gap-2"><QrCode className="h-4 w-4 shrink-0 text-primary" /> Escaneie o QR Code ou cole o código copiado.</li>
           <li className="flex gap-2"><BadgeCheck className="h-4 w-4 shrink-0 text-primary" /> Confirme. O pedido é aprovado na hora.</li>
         </ol>
-        <p className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground"><ShieldCheck className="h-4 w-4" /> Pagamento processado com segurança pela InvictusPay</p>
       </main>
     );
   }
