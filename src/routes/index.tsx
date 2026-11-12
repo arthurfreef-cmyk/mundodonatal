@@ -49,7 +49,7 @@ function Index() {
   return (
     <main>
       <section className="relative h-[420px] overflow-hidden md:h-[440px]">
-        <video autoPlay muted loop playsInline poster={ASSET("hero-video-poster-mobile.webp")} aria-label="Árvore de Natal decorada do Mundo do Natal" className="absolute inset-0 h-full w-full object-cover object-[center_60%]" src="https://mundodonatal.com/cdn/shop/videos/c/vp/7dae404430564ab8b9ec66556a69b1c0/7dae404430564ab8b9ec66556a69b1c0.HD-720p-2.1Mbps-94990453.mp4?v=0" />
+        <video autoPlay muted loop playsInline preload="none" poster={ASSET("hero-video-poster-mobile.webp")} aria-label="Árvore de Natal decorada do Mundo do Natal" className="absolute inset-0 h-full w-full object-cover object-[center_60%]" src="https://mundodonatal.com/cdn/shop/videos/c/vp/7dae404430564ab8b9ec66556a69b1c0/7dae404430564ab8b9ec66556a69b1c0.HD-720p-2.1Mbps-94990453.mp4?v=0" />
         <div className="hero-overlay absolute inset-0" />
         <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-center px-6 text-primary-foreground md:px-8">
           <p className="text-xs font-medium">Coleção Natal 2026</p>
