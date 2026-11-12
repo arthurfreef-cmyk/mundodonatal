@@ -24,6 +24,7 @@ export function ProductCard({ product, eager = false, cols = 6, layout = "carous
             sizes={sizes}
             alt={a.alt || product.title}
             loading={eager ? "eager" : "lazy"}
+            fetchPriority={eager ? "high" : "auto"}
             decoding="async"
             width={800}
             height={1000}
@@ -36,7 +37,7 @@ export function ProductCard({ product, eager = false, cols = 6, layout = "carous
             srcSet={sources(b.src)}
             sizes={sizes}
             alt={b.alt || product.title}
-            loading="eager"
+            loading="lazy"
             decoding="async"
             width={800}
             height={1000}
