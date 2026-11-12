@@ -44,7 +44,7 @@ function ProductDetails({ product }: { product: NonNullable<ReturnType<typeof ge
   const pp = variantPrice(v);
   return (
     <main className="mx-auto grid max-w-7xl items-start gap-8 px-4 py-6 sm:py-8 md:grid-cols-2 md:gap-12 md:px-8 md:py-10">
-      <div>
+      <div className="min-w-0 md:sticky md:top-32">
         <img src={img(product.images[im]?.src, 1000)} alt={product.title} fetchPriority="high" width={1000} height={1000} className="aspect-square w-full bg-muted object-cover" />
         <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
           {product.images.map((i, n) => (
@@ -54,8 +54,8 @@ function ProductDetails({ product }: { product: NonNullable<ReturnType<typeof ge
           ))}
         </div>
       </div>
-      <div>
-        <h1 className="text-3xl md:text-4xl">{product.title}</h1>
+      <div className="min-w-0 md:pt-2">
+        <h1 className="text-3xl leading-tight md:text-4xl">{product.title}</h1>
         <div className="mt-4 flex flex-wrap items-baseline gap-3">
           <span className="text-2xl font-bold text-primary">{formatBRL(pp.price)}</span>
           {pp.compareAt && <s className="text-muted-foreground">{formatBRL(pp.compareAt)}</s>}
