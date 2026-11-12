@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductSection } from "@/components/store/ProductCard";
 import { Countdown } from "@/components/store/Countdown";
-import { ASSET, collectionProducts } from "@/lib/catalog";
+import { ASSET, collectionProducts, collections, getProduct, img } from "@/lib/catalog";
 import { BLACK_FRIDAY } from "@/lib/promo";
 
 /** Próximo dia de Natal (25/12) como ISO, para o contador do hero. */
@@ -30,7 +30,7 @@ function Index() {
   return (
     <main>
       <section className="relative h-[340px] overflow-hidden md:h-[380px]">
-        <img src={ASSET("hero-video-poster-mobile.webp")} alt="Árvore de Natal decorada do Mundo do Natal" fetchPriority="high" className="absolute inset-0 h-full w-full object-cover object-[center_60%]" />
+        <video autoPlay muted loop playsInline poster={ASSET("hero-video-poster-mobile.webp")} aria-label="Árvore de Natal decorada do Mundo do Natal" className="absolute inset-0 h-full w-full object-cover object-[center_60%]" src="https://mundodonatal.com/cdn/shop/videos/c/vp/7dae404430564ab8b9ec66556a69b1c0/7dae404430564ab8b9ec66556a69b1c0.HD-720p-2.1Mbps-94990453.mp4?v=0" />
         <div className="hero-overlay absolute inset-0" />
         <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-center px-6 text-primary-foreground md:px-8">
           <p className="text-xs font-medium">Coleção Natal 2026</p>
@@ -45,6 +45,20 @@ function Index() {
             <Countdown target={christmasTarget} compact tone="dark" />
           </div>
           <Button asChild size="lg" variant="secondary" className="mt-4 w-fit"><Link to="/collections/$handle" params={{ handle: "arvores-de-natal" }}>Ver árvores de Natal <ArrowRight /></Link></Button>
+        </div>
+      </section>
+      <section className="mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-10" aria-label="Categorias">
+        <h2 className="mb-5 text-2xl md:text-3xl">Compre por categoria</h2>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
+          {collections.map((c) => {
+            const cover = c.products.map((h) => getProduct(h)).find((p) => p?.images[0])?.images[0];
+            return (
+              <Link key={c.handle} to="/collections/$handle" params={{ handle: c.handle }} className="group overflow-hidden rounded-md border bg-card text-center">
+                {cover && <img src={img(cover.src, 240)} alt={cover.alt || c.title} loading="lazy" decoding="async" width={240} height={240} className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105" />}
+                <h3 className="px-2 py-2.5 font-sans text-xs font-medium leading-tight md:text-sm">{c.title}</h3>
+              </Link>
+            );
+          })}
         </div>
       </section>
       <ProductSection title="Árvores de Natal mais Desejadas" to="/collections/arvores-de-natal" items={collectionProducts("arvores-de-natal").slice(0, 12)} prioritizeFirstRow />
