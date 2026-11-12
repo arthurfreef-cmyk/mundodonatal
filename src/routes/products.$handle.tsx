@@ -46,7 +46,7 @@ function ProductDetails({ product }: { product: NonNullable<ReturnType<typeof ge
     <main className="mx-auto grid max-w-6xl gap-10 px-4 py-10 md:grid-cols-2">
       <div>
         <img src={img(product.images[im]?.src, 1000)} alt={product.title} fetchPriority="high" width={1000} height={1000} className="aspect-square w-full bg-muted object-cover" />
-        <div className="mt-3 flex gap-2 overflow-x-auto">
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
           {product.images.map((i, n) => (
             <Button variant="outline" key={i.src} onClick={() => setIm(n)} aria-label={`Foto ${n + 1}`} aria-pressed={im === n} className={cn("h-16 w-16 shrink-0 overflow-hidden p-0", im === n && "border-primary ring-1 ring-primary")}>
               <img src={img(i.src, 150)} alt="" loading="lazy" decoding="async" className="h-16 w-16 object-cover" />
