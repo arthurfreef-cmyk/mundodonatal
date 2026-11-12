@@ -8,9 +8,6 @@ import { cleanCep, lookupCep, shippingOptions, type ShippingOption } from "@/lib
 import { isValidCpf } from "@/lib/br";
 import { useServerFn } from "@tanstack/react-start";
 import { createPixPayment, getPaymentStatus } from "@/lib/payments.functions";
-import { syncMetaPermission, trackMetaEvent } from "@/lib/meta-pixel";
-import { resolveAdvertisingRegion } from "@/lib/advertising-consent";
-import { cartEventParameters, type MetaCartItem } from "@/lib/meta-commerce";
 import { Button } from "@/components/ui/button";
 import { CheckoutDetails } from "@/components/store/CheckoutDetails";
 import { CheckoutSummary } from "@/components/store/CheckoutSummary";
@@ -37,18 +34,7 @@ function Checkout() {
   const [cepState, setCepState] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [ship, setShip] = useState<ShippingOption["id"]>("free");
   const [done, setDone] = useState(false);
-  const checkoutStarted = useRef(false);
   const paymentConfirmed = useRef(false);
-  const paidItems = useRef<MetaCartItem[]>([]);
-  useEffect(() => {
-    if (!lines.length || checkoutStarted.current) return;
-    checkoutStarted.current = true;
-    void resolveAdvertisingRegion().then((region) => {
-      syncMetaPermission(region);
-      trackMetaEvent("InitiateCheckout", cartEventParameters(lines));
-    });
-  }, [lines]);
-
   useEffect(() => setOpen(false), [setOpen]);
 
   // Busca o endereço automaticamente quando o CEP fica completo.
@@ -89,7 +75,6 @@ function Checkout() {
         const { status } = await checkStatus({ data: { id: pix.id } });
         if (status === "paid" && !paymentConfirmed.current) {
           paymentConfirmed.current = true;
-          trackMetaEvent("Purchase", cartEventParameters(paidItems.current, pix.amount / 100), `pix-${pix.id}`);
           setDone(true); clear();
         }
       } catch { /* tenta de novo */ }
@@ -107,8 +92,6 @@ function Checkout() {
         cep: f.cep, shipping: ship,
       } });
       if (!r.ok) setErr(r.error); else {
-        paidItems.current = lines.map(({ variantId, qty, unit }) => ({ variantId, qty, unit }));
-        trackMetaEvent("AddPaymentInfo", { ...cartEventParameters(paidItems.current, r.amount / 100), payment_method: "Pix" }, `pix-${r.id}`);
         setPix(r);
       }
     } catch { setErr("Não foi possível gerar o Pix. Tente novamente."); }
