@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useLocation,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -111,7 +112,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const location = useRouter().state.location;
+  const location = useLocation();
 
   useEffect(() => {
     const pixelWindow = window as typeof window & {
@@ -143,7 +144,7 @@ function RootComponent() {
       fbq("init", "1108400925358092");
     }
 
-    pixelWindow.fbq("track", "PageView");
+    pixelWindow.fbq?.("track", "PageView");
   }, [location.pathname, location.searchStr]);
 
   return (
