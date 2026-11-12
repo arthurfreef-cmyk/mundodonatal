@@ -2,6 +2,7 @@
 
 ## Troca do provedor Pix
 - [x] Remover o provedor anterior e suas chamadas, preservando o visual; Pix indisponível até completar a Fruitfy, conforme solicitado.
+- [ ] Aplicar o exemplo recebido de cobrança com name/email/phone/cpf/items/utm; confirmar caminho de produção e resposta Pix, pois o exemplo usa localhost e não contém retorno.
 - [ ] Ativar Fruitfy e verificar geração e consulta do Pix; credenciais salvas, mas depende da documentação completa de criação e consulta. Não utilizar outro provedor.
 - [x] Salvar FRUITFY_API_TOKEN e FRUITFY_STORE_ID pelo formulário seguro, sem expor os valores.
 - [x] Salvar FRUITFY_PRODUCT_ID em segredo para uso único em todos os produtos na integração Fruitfy; preservar os identificadores do catálogo da loja.
