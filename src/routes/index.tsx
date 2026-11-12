@@ -19,6 +19,19 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+// Categorias de maior procura aparecem primeiro; as demais mantêm sua ordem original.
+const featuredCategoryOrder = [
+  "arvores-de-natal",
+  "enfeites",
+  "guirlandas-natalinas",
+  "imagens-natalinas",
+  "luzes",
+  "mini-arvores",
+  "festao-natalino",
+  "saias-de-arvores",
+  "topo-de-arvores",
+];
+
 const cats = [
   { img: "category-trees.webp", k: "Conheça", t: "Nossas árvores", to: "/collections/arvores-de-natal" },
   { img: "category-figures.webp", k: "Descubra", t: "Decorações de Natal", to: "/collections/imagens-natalinas" },
@@ -27,6 +40,12 @@ const cats = [
 
 function Index() {
   const christmasTarget = nextChristmasTarget();
+  const orderedCollections = [...collections].sort((a, b) => {
+    const aIndex = featuredCategoryOrder.indexOf(a.handle);
+    const bIndex = featuredCategoryOrder.indexOf(b.handle);
+    return (aIndex === -1 ? Number.MAX_SAFE_INTEGER : aIndex) - (bIndex === -1 ? Number.MAX_SAFE_INTEGER : bIndex);
+  });
+
   return (
     <main>
       <section className="relative h-[340px] overflow-hidden md:h-[380px]">
@@ -47,27 +66,48 @@ function Index() {
           <Button asChild size="lg" variant="secondary" className="mt-4 w-fit"><Link to="/collections/$handle" params={{ handle: "arvores-de-natal" }}>Ver árvores de Natal <ArrowRight /></Link></Button>
         </div>
       </section>
-      <section className="mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-10" aria-label="Categorias">
-        <h2 className="mb-5 text-2xl md:text-3xl">Compre por categoria</h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
-          {collections.map((c) => {
+
+      <section className="mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-10" aria-label="Categorias mais procuradas">
+        <div className="mb-5 flex items-end justify-between gap-3">
+          <div>
+            <p className="eyebrow mb-2 text-muted-foreground">Encontre o que procura</p>
+            <h2 className="text-2xl md:text-3xl">Categorias mais procuradas</h2>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {orderedCollections.map((c) => {
             const cover = c.products.map((h) => getProduct(h)).find((p) => p?.images[0])?.images[0];
             return (
-              <Link key={c.handle} to="/collections/$handle" params={{ handle: c.handle }} className="group overflow-hidden rounded-md border bg-card text-center">
-                {cover && <img src={img(cover.src, 240)} alt={cover.alt || c.title} loading="lazy" decoding="async" width={240} height={240} className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105" />}
-                <h3 className="px-2 py-2.5 font-sans text-xs font-medium leading-tight md:text-sm">{c.title}</h3>
+              <Link key={c.handle} to="/collections/$handle" params={{ handle: c.handle }} className="group overflow-hidden rounded-md border bg-card text-left transition-shadow duration-300 hover:shadow-md">
+                {cover && (
+                  <div className="aspect-[4/3] overflow-hidden bg-muted">
+                    <img
+                      src={img(cover.src, 640)}
+                      srcSet={[320, 480, 640, 900].map((width) => `${img(cover.src, width)} ${width}w`).join(", ")}
+                      sizes="(min-width: 1280px) 190px, (min-width: 768px) 22vw, 46vw"
+                      alt={cover.alt || c.title}
+                      loading="lazy"
+                      decoding="async"
+                      width={640}
+                      height={480}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                )}
+                <h3 className="px-3 py-3 font-sans text-sm font-medium leading-tight md:text-base">{c.title}</h3>
               </Link>
             );
           })}
         </div>
       </section>
+
       <ProductSection title="Árvores de Natal mais Desejadas" to="/collections/arvores-de-natal" items={collectionProducts("arvores-de-natal").slice(0, 12)} prioritizeFirstRow />
       <section className="border-y bg-muted px-4 py-8 md:py-10">
         <h2 className="text-center text-3xl">Decore cada detalhe</h2>
         <div className="mx-auto mt-6 grid max-w-6xl grid-cols-3 gap-3 md:gap-6">
           {cats.map((c) => (
-            <Link key={c.t} to={c.to} className="bg-card text-center">
-              <img src={ASSET(c.img)} alt={c.t} className="aspect-[4/3] w-full object-cover" loading="lazy" />
+            <Link key={c.t} to={c.to} className="group overflow-hidden rounded-md bg-card text-center">
+              <img src={ASSET(c.img)} alt={c.t} className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
               <h3 className="px-2 py-3 font-sans text-xs font-medium md:text-base">{c.t}</h3>
             </Link>
           ))}
