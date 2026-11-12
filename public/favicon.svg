@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="5 50 290 290" role="img" aria-labelledby="title">
+  <title id="title">Mundo Natalino</title>
+  <rect x="5" y="50" width="290" height="290" rx="52" fill="#F7F1E4"/>
+  <g fill="#741626">
+    <path d="M148 111 124 151 73 183 122 185 55 237 119 236 49 287 111 300 139 290 136 326 166 326 161 290 190 300 251 287 183 236 245 237 178 185 227 183 176 151Z"/>
+  </g>
+  <g fill="#E8C56D">
+    <path d="m151 65 7 17 17 7-17 7-7 17-7-17-17-7 17-7Z"/>
+    <path d="m151 176 11 24 24 11-24 11-11 24-11-24-24-11 24-11Z"/>
+  </g>
+</svg>
