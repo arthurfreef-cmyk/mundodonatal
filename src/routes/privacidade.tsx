@@ -28,7 +28,7 @@ function PrivacyPage() {
       </section>
       <section className="mt-8 space-y-4 text-sm leading-relaxed">
         <h2 className="text-2xl">Dados para sua compra</h2>
-        <p>Os dados informados no checkout são utilizados para consultar o endereço pelo CEP, processar a solicitação de pagamento Pix pela InvictusPay e viabilizar a entrega do pedido. As informações necessárias são compartilhadas com os prestadores envolvidos nessas etapas para executar a compra.</p>
+        <p>Os dados informados no checkout são utilizados para consultar o endereço pelo CEP e viabilizar a entrega do pedido. A loja está configurando a Fruitfy como provedora de pagamento Pix; a geração de cobranças permanece indisponível até a conclusão dessa integração. As informações necessárias serão compartilhadas com os prestadores envolvidos para executar a compra.</p>
         <p>Os dados de pagamento são processados pelo provedor de pagamento. A loja não solicita nem armazena a senha do aplicativo bancário.</p>
       </section>
       <section className="mt-8 space-y-4 text-sm leading-relaxed">

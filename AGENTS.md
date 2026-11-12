@@ -19,3 +19,4 @@
 - Use responsive product image sources and defer alternate product photos until pointer or keyboard interaction to reduce initial image downloads without changing the catalog.
 - Use StoreDrawer for cart and mobile navigation so focus trapping, Escape dismissal and scroll locking stay consistent.
 - Validate saved cart entries and tolerate unavailable browser storage; persist only after hydration to preserve existing carts.
+- Payment RPCs must fail closed until the replacement provider's documented contract is verified; never fall back to a removed provider or synthesize payment confirmation.

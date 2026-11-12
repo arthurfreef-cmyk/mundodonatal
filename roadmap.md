@@ -1,8 +1,8 @@
 # Integração do Pixel
 
 ## Troca do provedor Pix
-- [ ] Substituir InvictusPay por Fruitfy, preservando preços, frete, checkout e confirmação de pagamento; aguardando documentação completa de criação e consulta do Pix (acesso público bloqueado).
-- [ ] Configurar credenciais Fruitfy e verificar geração e consulta do Pix; depende da documentação, token e Store-Id da loja. Manter o provedor atual até a troca estar validada.
+- [x] Remover o provedor anterior e suas chamadas, preservando o visual; Pix indisponível até completar a Fruitfy, conforme solicitado.
+- [ ] Ativar Fruitfy e verificar geração e consulta do Pix; credenciais salvas, mas depende da documentação completa de criação e consulta. Não utilizar outro provedor.
 - [x] Salvar FRUITFY_API_TOKEN e FRUITFY_STORE_ID pelo formulário seguro, sem expor os valores.
 - [x] Salvar FRUITFY_PRODUCT_ID em segredo para uso único em todos os produtos na integração Fruitfy; preservar os identificadores do catálogo da loja.
 - [ ] Implementar pedidos persistentes, webhooks autenticados e processamento idempotente; exemplo order_paid recebido com webhook_id e order.id, mas faltam o método oficial de autenticação, criação e consulta do Pix e a unidade monetária documentada. Não tratar o exemplo como pagamento real.
@@ -11,7 +11,7 @@
 - [x] Remover a barra vermelha e manter somente a preta rolante, conforme o pedido mais recente; confirmado visualmente no celular.
 - [x] Corrigir carrinho inválido/armazenamento bloqueado, menu acessível, endereço antigo ao mudar CEP, cópia Pix sem confirmação, avisos incorretos e overflow no rodapé, preservando preços e Pix.
 - [x] Verificar produto → carrinho → checkout com CEP real, busca no celular e larguras de 320 a 1334 px; 20 testes passaram, sem gerar cobrança.
-- [ ] Verificar o registro do endereço na integração de pedidos e o tratamento de status finais do Pix (depende de confirmar os campos e status aceitos pela InvictusPay; nenhuma cobrança real realizada nesta revisão).
+- [ ] Verificar o registro do endereço e o tratamento de status finais do Pix na Fruitfy; depende dos campos oficiais. Nenhuma cobrança real realizada nesta revisão.
 
 ## Barras do topo e carregamento
 - [x] Restaurar a faixa rolante do topo preservando a Black Friday e o cabeçalho.

@@ -73,7 +73,7 @@ function Checkout() {
     const t = setInterval(async () => {
       try {
         const { status } = await checkStatus({ data: { id: pix.id } });
-        if (status === "paid" && !paymentConfirmed.current) {
+        if (String(status) === "paid" && !paymentConfirmed.current) {
           paymentConfirmed.current = true;
           setDone(true); clear();
         }
