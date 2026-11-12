@@ -54,7 +54,7 @@ function Checkout() {
     return () => { alive = false; };
   }, [f.cep]);
 
-  const options = useMemo(() => (cepState === "ok" ? shippingOptions(f.cep) : []), [cepState, f.cep]);
+  const options = useMemo(() => (cepState === "ok" ? shippingOptions(f.cep, f.cpf) : []), [cepState, f.cep]);
   const shipping = options.find((o) => o.id === ship)?.price ?? 0;
   const total = subtotal + shipping;
   const ready = /^\S+@\S+\.\S+$/.test(f.email.trim()) && f.name.trim().length > 2 && f.phone.replace(/\D/g, "").length >= 10 && isValidCpf(f.cpf) && cepState === "ok" && Boolean(f.street.trim() && f.number.trim());
