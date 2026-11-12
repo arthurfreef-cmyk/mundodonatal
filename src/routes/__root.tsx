@@ -74,8 +74,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Mundo do Natal" },
-      { name: "description", content: "Árvores e decoração de Natal." },
+      { title: "Mundo Natalino" },
+      { name: "description", content: "Mundo Natalino: árvores e decoração para transformar seu Natal." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
