@@ -67,34 +67,32 @@ function Index() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-10" aria-label="Categorias mais procuradas">
-        <div className="mb-5 flex items-end justify-between gap-3">
-          <div>
-            <p className="eyebrow mb-2 text-muted-foreground">Encontre o que procura</p>
-            <h2 className="text-2xl md:text-3xl">Categorias mais procuradas</h2>
-          </div>
+      <section className="mx-auto max-w-7xl px-4 py-5 md:px-8 md:py-6" aria-label="Categorias mais procuradas">
+        <div className="mb-4">
+          <p className="eyebrow mb-1 text-muted-foreground">Encontre o que procura</p>
+          <h2 className="text-xl md:text-2xl">Categorias mais procuradas</h2>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 scrollbar-none md:mx-0 md:gap-6 md:px-0">
           {orderedCollections.map((c) => {
             const cover = c.products.map((h) => getProduct(h)).find((p) => p?.images[0])?.images[0];
             return (
-              <Link key={c.handle} to="/collections/$handle" params={{ handle: c.handle }} className="group overflow-hidden rounded-md border bg-card text-left transition-shadow duration-300 hover:shadow-md">
+              <Link key={c.handle} to="/collections/$handle" params={{ handle: c.handle }} className="group flex w-[88px] flex-none snap-start flex-col items-center text-center md:w-[104px]">
                 {cover && (
-                  <div className="aspect-[4/3] overflow-hidden bg-muted">
+                  <div className="aspect-square w-[76px] overflow-hidden rounded-full border bg-muted ring-1 ring-border/50 transition-all duration-300 group-hover:ring-2 group-hover:ring-primary md:w-[88px]">
                     <img
-                      src={img(cover.src, 640)}
-                      srcSet={[320, 480, 640, 900].map((width) => `${img(cover.src, width)} ${width}w`).join(", ")}
-                      sizes="(min-width: 1280px) 190px, (min-width: 768px) 22vw, 46vw"
+                      src={img(cover.src, 320)}
+                      srcSet={[160, 240, 320, 480].map((width) => `${img(cover.src, width)} ${width}w`).join(", ")}
+                      sizes="(min-width: 768px) 88px, 76px"
                       alt={cover.alt || c.title}
                       loading="lazy"
                       decoding="async"
-                      width={640}
-                      height={480}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      width={320}
+                      height={320}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   </div>
                 )}
-                <h3 className="px-3 py-3 font-sans text-sm font-medium leading-tight md:text-base">{c.title}</h3>
+                <h3 className="mt-2 line-clamp-2 font-sans text-xs font-medium leading-tight md:text-sm">{c.title}</h3>
               </Link>
             );
           })}
