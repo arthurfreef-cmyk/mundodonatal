@@ -19,7 +19,7 @@ export function CheckoutSummary({ savings, shipping, total, hasShipping }: Check
         {lines.map((line) => (
           <div key={line.variantId} className="flex items-start gap-3 text-sm">
             <div className="relative shrink-0">
-              <img src={img(line.variant.img ?? line.product.images[0]?.src, 160)} alt={line.product.title} className="h-20 w-16 rounded-lg border bg-muted object-cover" />
+              <img src={img(line.variant.img ?? line.product.images[0]?.src, 160)} srcSet={[96, 160, 240].map((width) => img(line.variant.img ?? line.product.images[0]?.src, width) + " " + width + "w").join(", ")} sizes="64px" alt={line.product.title} loading="lazy" decoding="async" width={64} height={80} className="h-20 w-16 rounded-lg border bg-muted object-cover" />
               <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[10px] text-primary-foreground">{line.qty}</span>
             </div>
             <div className="min-w-0 flex-1"><p className="text-sm font-medium leading-snug">{line.product.title}</p>{line.variant.t !== "Default Title" && <p className="mt-1 text-xs text-muted-foreground">{line.variant.t}</p>}<p className="mt-2 font-semibold">{formatBRL(line.unit * line.qty)}</p></div>
