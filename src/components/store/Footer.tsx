@@ -23,7 +23,8 @@ export function Footer() {
       toast.error("Digite um e-mail válido.");
       return;
     }
-    toast.info("O cadastro de novidades ainda não está disponível. Fale com nosso atendimento.");
+    const message = "Olá! Quero receber novidades e ofertas do Mundo Natalino. Meu e-mail é: " + email.trim();
+    window.open("https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(message), "_blank", "noopener,noreferrer");
   };
   return (
     <footer>
