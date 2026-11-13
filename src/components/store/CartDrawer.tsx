@@ -10,8 +10,8 @@ export function CartDrawer() {
   const { open, setOpen, lines, count, subtotal, setQty, remove } = useCart();
   return (
     <StoreDrawer open={open} onOpenChange={setOpen} title={`Seu carrinho (${count})`}>
-        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-5">
-          {lines.length === 0 && <div className="flex flex-1 flex-col items-center justify-center px-6 text-center"><p className="text-lg font-semibold">Seu carrinho está vazio</p><p className="mt-2 text-sm text-muted-foreground">Explore nossos produtos e encontre a decoração ideal para o seu Natal.</p><Button type="button" variant="commerce" className="mt-5" onClick={() => setOpen(false)}>Continuar comprando</Button></div>}
+        <div className="flex min-h-0 flex-1 flex-col space-y-4 overflow-y-auto p-5">
+          {lines.length === 0 && <div className="flex min-h-[240px] flex-1 flex-col items-center justify-center px-6 text-center"><p className="text-lg font-semibold">Seu carrinho está vazio</p><p className="mt-2 text-sm text-muted-foreground">Explore nossos produtos e encontre a decoração ideal para o seu Natal.</p><Button type="button" variant="commerce" className="mt-5" onClick={() => setOpen(false)}>Continuar comprando</Button></div>}
           {lines.map((l) => (
             <div key={l.variantId} className="flex gap-3">
               <img src={img(l.variant.img ?? l.product.images[0]?.src, 200)} srcSet={[120, 200, 300].map((width) => img(l.variant.img ?? l.product.images[0]?.src, width) + " " + width + "w").join(", ")} sizes="80px" alt={l.product.title} loading="lazy" decoding="async" width={80} height={80} className="h-20 w-20 rounded-md border bg-muted object-cover" />
