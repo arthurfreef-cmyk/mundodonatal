@@ -61,7 +61,7 @@ function Checkout() {
     return () => { alive = false; };
   }, [f.cep]);
 
-  const options = useMemo(() => (cepState === "ok" ? shippingOptions(f.cep, f.cpf) : []), [cepState, f.cep]);
+  const options = useMemo(() => (cepState === "ok" ? shippingOptions(f.cep, f.cpf) : []), [cepState, f.cep, f.cpf]);
   const shipping = options.find((o) => o.id === ship)?.price ?? 0;
   const total = subtotal + shipping;
   const ready = /^\S+@\S+\.\S+$/.test(f.email.trim()) && f.name.trim().length > 2 && f.phone.replace(/\D/g, "").length >= 10 && isValidCpf(f.cpf) && cepState === "ok" && Boolean(f.street.trim() && f.number.trim());
@@ -145,18 +145,6 @@ function Checkout() {
                   <img src={qr} alt="QR Code Pix para pagamento" className="block h-[min(54vw,240px)] w-[min(54vw,240px)] object-contain sm:h-60 sm:w-60" />
                 </div>
                 {pix.code && (
-                  <Button type="button" size="lg" onClick={async () => {
-                    try {
-                      await navigator.clipboard.writeText(pix.code!);
-                      setErr(""); setCopied(true); setTimeout(() => setCopied(false), 2500);
-                    } catch {
-                      setErr("Não foi possível copiar automaticamente. Toque e segure o código para copiá-lo.");
-                    }
-                  }} className="mt-3 h-12 w-full max-w-sm text-base font-bold">
-                    {copied ? <><Check className="h-5 w-5" /> Código copiado!</> : "Copiar código Pix"}
-                  </Button>
-                )}
-                {pix.code && (
                   <details className="mt-3 w-full max-w-sm rounded-lg border bg-muted/40 p-3">
                     <summary className="cursor-pointer text-center text-xs font-semibold text-muted-foreground">Mostrar código Pix copia e cola</summary>
                     <p className="mt-2 break-all select-all text-left text-xs leading-relaxed text-foreground">{pix.code}</p>
@@ -170,6 +158,33 @@ function Checkout() {
               </div>
             )}
 
+            {pix.code && (
+              <Button type="button" size="lg" onClick={async () => {
+                try {
+                  if (navigator.clipboard?.writeText) {
+                    await navigator.clipboard.writeText(pix.code!);
+                  } else {
+                    const field = document.createElement("textarea");
+                    field.value = pix.code!;
+                    field.setAttribute("readonly", "");
+                    field.style.position = "fixed";
+                    field.style.opacity = "0";
+                    document.body.appendChild(field);
+                    field.select();
+                    const copiedSuccessfully = document.execCommand("copy");
+                    field.remove();
+                    if (!copiedSuccessfully) throw new Error("Clipboard unavailable");
+                  }
+                  setErr("");
+                  setCopied(true);
+                  window.setTimeout(() => setCopied(false), 2500);
+                } catch {
+                  setErr("Não foi possível copiar automaticamente. Abra o código Pix abaixo, selecione e copie.");
+                }
+              }} className="mt-3 h-12 w-full max-w-sm text-base font-bold">
+                {copied ? <><Check className="h-5 w-5" /> Código copiado!</> : "Copiar código Pix"}
+              </Button>
+            )}
             {err && <p role="alert" className="mt-3 text-center text-sm text-destructive">{err}</p>}
             <div className="mt-4 flex items-center justify-center gap-2 rounded-lg bg-primary/5 px-3 py-2.5 text-center text-xs font-medium text-primary">
               <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
