@@ -30,17 +30,6 @@ export const Route = createFileRoute("/checkout")({
 
 
 
-/** Purchase só depois da confirmação da Fruitfy, com o valor efetivamente pago (centavos → reais). */
-function trackPurchase(orderId: string, amountCents: number) {
-  const w = window as typeof window & { fbq?: (...args: unknown[]) => void };
-  try {
-    const key = `mn-purchase-${orderId}`;
-    if (window.sessionStorage.getItem(key)) return;
-    window.sessionStorage.setItem(key, "1");
-  } catch { /* storage indisponível: o ref do componente já evita repetição */ }
-  w.fbq?.("track", "Purchase", { value: amountCents / 100, currency: "BRL" }, { eventID: orderId });
-}
-
 function Checkout() {
   const { lines, subtotal, setOpen, clear } = useCart();
   const [f, setF] = useState({ email: "", name: "", phone: "", cpf: "", cep: "", street: "", number: "", comp: "", district: "", city: "", state: "" });
@@ -93,7 +82,6 @@ function Checkout() {
         const r = await checkStatus({ data: { id: pix.id } });
         if (r.status === "paid" && !paymentConfirmed.current) {
           paymentConfirmed.current = true;
-          trackPurchase(pix.id, r.amount);
           setDone(true); clear();
         } else if (r.status === "canceled") {
           setPix(null); setErr("Este Pix foi cancelado ou expirou. Gere um novo para concluir a compra.");
