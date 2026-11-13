@@ -131,6 +131,19 @@ function RootComponent() {
     captureUtms(window.location.search);
   }, [location.href]);
 
+  // Script oficial da UTMify para leitura e persistência dos parâmetros de campanha.
+  useEffect(() => {
+    if (document.querySelector('script[data-utmify-prevent-xcod-sck]')) return;
+
+    const utmifyScript = document.createElement("script");
+    utmifyScript.src = "https://cdn.utmify.com.br/scripts/utms/latest.js";
+    utmifyScript.async = true;
+    utmifyScript.defer = true;
+    utmifyScript.setAttribute("data-utmify-prevent-xcod-sck", "");
+    utmifyScript.setAttribute("data-utmify-prevent-subids", "");
+    (document.head || document.documentElement).appendChild(utmifyScript);
+  }, []);
+
   useEffect(() => {
     type MetaPixelFunction = ((...args: unknown[]) => void) & {
       callMethod?: (...args: unknown[]) => void;
