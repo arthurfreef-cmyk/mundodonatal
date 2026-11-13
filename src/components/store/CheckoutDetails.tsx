@@ -19,7 +19,7 @@ export interface CheckoutDetailsProps {
   ship: ShippingOption["id"];
   setShip: (value: ShippingOption["id"]) => void;
   total: number;
-  ready: boolean | string;
+  ready: boolean;
   paying: boolean;
   error: string;
   onPay: () => Promise<void>;
@@ -92,6 +92,7 @@ export function CheckoutDetails({ values: f, setValues: setF, cepState, options,
           {paying ? <><Loader2 className="animate-spin" /> Gerando Pix…</> : <>FINALIZAR PEDIDO <ArrowRight /></>}
         </Button>
         {error && <p role="alert" className="text-center text-sm text-destructive">{error}</p>}
+        {!ready && !paying && <p className="text-center text-xs text-muted-foreground">Para liberar o pagamento, preencha seus dados, informe um CEP válido, confirme o endereço e revise o CPF e celular.</p>}
         <p className="flex items-center justify-center gap-2 text-xs text-muted-foreground"><Lock className="h-3.5 w-3.5" /> Pagamento seguro via Pix</p>
       </div>
     </form>
