@@ -7,7 +7,7 @@ import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/lib/promo";
 
 export function CartDrawer() {
-  const { open, setOpen, lines, subtotal, setQty, remove } = useCart();
+  const { open, setOpen, lines, count, subtotal, setQty, remove } = useCart();
   return (
     <StoreDrawer open={open} onOpenChange={setOpen} title={`Seu carrinho (${count})`}>
         <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-5">
