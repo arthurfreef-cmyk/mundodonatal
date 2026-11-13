@@ -60,15 +60,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const variant = product?.variants.find((item) => item.id === variantId);
     if (!product || !variant?.a || !Number.isSafeInteger(qty) || qty <= 0) return;
     setRaw((r) => {
-      const ex = r.find((l) => l.variantId === variantId);
-      if (ex) return r.map((l) => (l.variantId === variantId ? { ...l, qty: l.qty + qty } : l));
-      return [...r, { handle, variantId, qty }];
+      const ex = r.find((l) => l.handle === handle && l.variantId === variantId);
+      if (ex) return r.map((l) => (l.handle === handle && l.variantId === variantId ? { ...l, qty: Math.min(99, l.qty + qty) } : l));
+      return [...r, { handle, variantId, qty: Math.min(99, qty) }];
     });
     setOpen(true);
   }, []);
   const setQty = useCallback((variantId: number, qty: number) => {
     if (!Number.isSafeInteger(qty)) return;
-    setRaw((r) => (qty <= 0 ? r.filter((l) => l.variantId !== variantId) : r.map((l) => (l.variantId === variantId ? { ...l, qty } : l))));
+    setRaw((r) => (qty <= 0
+      ? r.filter((l) => l.variantId !== variantId)
+      : r.map((l) => (l.variantId === variantId ? { ...l, qty: Math.min(99, qty) } : l))));
   }, []);
   const clear = useCallback(() => setRaw([]), []);
   const remove = useCallback((variantId: number) => setRaw((r) => r.filter((l) => l.variantId !== variantId)), []);
