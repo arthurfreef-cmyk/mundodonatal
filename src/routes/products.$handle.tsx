@@ -1,6 +1,5 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
 import { Minus, Plus, ShoppingBag, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
