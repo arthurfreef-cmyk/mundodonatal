@@ -83,9 +83,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "preconnect", href: "https://mundodonatal.com" },
       { rel: "preconnect", href: "https://cdn.shopify.com" },
-      { rel: "preconnect", href: "https://connect.facebook.net" },
       { rel: "preconnect", href: "https://cdn.utmify.com.br" },
-      { rel: "dns-prefetch", href: "https://www.facebook.com" },
       { rel: "preconnect", href: "https://mundodonatal.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
@@ -108,15 +106,6 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         {children}
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: "none" }}
-            src="https://www.facebook.com/tr?id=1108400925358092&ev=PageView&noscript=1"
-            alt=""
-          />
-        </noscript>
         <Scripts />
       </body>
     </html>
@@ -145,49 +134,7 @@ function RootComponent() {
     }
   }, []);
 
-  useEffect(() => {
-    type MetaPixelFunction = ((...args: unknown[]) => void) & {
-      queue?: unknown[][];
-      push?: (...args: unknown[]) => void;
-      loaded?: boolean;
-      version?: string;
-    };
-    const pixelWindow = window as typeof window & {
-      fbq?: MetaPixelFunction;
-      _fbq?: MetaPixelFunction;
-      __mundoMetaPixelInitialized?: boolean;
-    };
 
-    if (!pixelWindow.fbq) {
-      const fbq = function (...args: unknown[]) {
-        const callable = fbq as typeof fbq & { callMethod?: (...values: unknown[]) => void; queue: unknown[][] };
-        if (callable.callMethod) callable.callMethod(...args);
-        else callable.queue.push(args);
-      } as MetaPixelFunction & { queue: unknown[][]; push: (...args: unknown[]) => void; loaded: boolean; version: string };
-
-      fbq.queue = [];
-      fbq.push = fbq;
-      fbq.loaded = true;
-      fbq.version = "2.0";
-      pixelWindow.fbq = fbq;
-      pixelWindow._fbq = fbq;
-
-      if (!document.getElementById("meta-pixel-script")) {
-        const script = document.createElement("script");
-        script.id = "meta-pixel-script";
-        script.async = true;
-        script.src = "https://connect.facebook.net/en_US/fbevents.js";
-        (document.head || document.documentElement).appendChild(script);
-      }
-    }
-
-    if (!pixelWindow.__mundoMetaPixelInitialized) {
-      pixelWindow.fbq?.("init", "1108400925358092");
-      pixelWindow.__mundoMetaPixelInitialized = true;
-    }
-
-    pixelWindow.fbq?.("track", "PageView");
-  }, [location.pathname, location.searchStr]);
 
   return (
     <QueryClientProvider client={queryClient}>
